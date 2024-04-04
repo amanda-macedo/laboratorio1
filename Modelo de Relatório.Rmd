@@ -1,0 +1,151 @@
+---
+title: "Modelo Relatório"
+author: "Lucas Barbieri Simões, Pedro Bündchen e Rodrigo Amaro Fonseca"
+date: "2024-03-25"
+output:
+  html_document:
+    df_print: paged
+---
+
+# 1- Introdução
+
+  (Nessa seção faz-se uma apresentação/contextualização do problema e descreve-se como está organizado o relatório)
+ 
+
+
+
+
+# 2- Informações de estudo
+
+  (Nessa seção, descreve-se o universo de estudo: População, variáveis e parâmetros de interesse. Além disso, apresenta-se como foram coletados os dados, forma de seleção dos indivíduos e instrumento de pesquisa.)
+  
+  
+# 3- Análise dos Dados
+
+  (Nessa seção apresentam-se, sempre acompanhadas por comentários, as tabelas e gráficos construídos assim como as medidas descritivas obtidas.)
+  (Caso haja necessidade, criar subseções usando "##")
+  
+
+
+```{r include=FALSE}
+# Dica: tem tudo aqui https://epirhandbook.com/pt/stat-tests.html
+
+pacman::p_load(readxl,tidyverse,dplyr,gtsummary) # sugestao p usar pacman, ele instala oq n estiver instalado e carrega
+# library(readxl)
+# library(tidyverse)
+# library(dplyr)
+# library(gtsummary)
+
+dados <- read_excel("C:/Users/amand/OneDrive/Documentos/GitHub/laboratorio1/file_show.xlsx")
+dados <- dados %>% select(ano, GolsMarcados, GolsSofridos, SaldoGols)
+
+
+```
+
+
+
+```{r echo=FALSE}
+tb <- tbl_summary(dados, label = list(GolsMarcados ~ "Gols Marcados",
+                               GolsSofridos ~ "Gols Sofridos",
+                               SaldoGols ~ "Saldo de Gols",
+                               ano ~ "Ano"),#RÓTULO
+                  type = list(all_continuous() ~ "continuous2"),#TIPO DE VARIÁVEL - continuous2 gasta 2 linhas
+                  statistic = all_continuous() ~ c(
+  "{mean} ({sd})",
+  "{median}",
+  "[{min}, {max}]"),
+            missing = "ifany", #always - sempre mostra os missings; no - nunca mostra; ifany - mostra só se tiver 
+            missing_text = "Dados Ausentes", #nome dos dados missings
+            by = ano, #tabela por grupo; morreu ou não morreu
+            percent = "row") %>% #coloca porcentagem por linha
+  bold_labels() %>% #variáveis em negrito
+  italicize_levels()  #níveis em itálico
+  #add_n(statistic = "{n}", #adiciona uma coluna com o tamanho da amostra; usa-se n ou N
+  #      col_label = "Tamanho da amostra", #nome da coluna
+  #      footnote = T, #explicação no rodapé
+  #      last = F)
+  #add_p(pvalue_fun = function(x) style_pvalue(x, digits = 2),
+  #      test = list(age ~ "t.test"))
+```
+
+
+```{r echo=FALSE}
+tb %>%
+ modify_header(list(label ~ "**Variável**", #muda o nome da coluna; ** ** coloca em negrito
+                    stat_1 ~ "**2013**",
+                    stat_2 ~ "**2014**",
+                    stat_3 ~ "**2015**",
+                    stat_4 ~ "**2016**",
+                    stat_5 ~ "**2017**",
+                    stat_6 ~ "**2018**",
+                    stat_7 ~ "**2019**",
+                    stat_8 ~ "**2020**",
+                    stat_9 ~ "**2021**",
+                    stat_10 ~ "**2022**",
+                    stat_11 ~ "**2023**"))
+```
+
+```{r eval=FALSE, include=FALSE}
+# Função para calcular estatísticas e gerar tabela
+#calculate_statistics <- function(data, feature, title) {
+ # data %>% 
+  #  group_by(diagnosis) %>% 
+   # summarise("Media" = round(mean({{feature}}, na.rm = TRUE), 2),
+    #          "Desvio Padrao" = round(sd({{feature}}, na.rm = TRUE), 2), 
+     #         "Variancia" = round(var({{feature}}, na.rm = TRUE), 2)) %>%
+    #gt() %>% tab_header(title = title)
+#}
+```
+
+<center>
+
+```{r echo=FALSE}
+#Boxplot
+library(ggplot2)
+
+boxplot <- ggplot(dados, aes(x = factor(1), y = GolsMarcados)) +
+  geom_boxplot(fill = "lightblue", color = "blue") +
+  geom_boxplot(aes(x = factor(2), y = SaldoGols), fill = "red", color = "darkred") +
+  scale_x_discrete(labels = c("Gols Marcados", "Saldo de Gols")) +
+  labs(title = "Boxplot de Gols Marcados e Saldo de Gols",
+       x = "Variáveis",
+       y = "Valor") +
+  theme_minimal()
+
+boxplot
+
+```
+
+</center>
+
+\
+
+<center>
+```{r echo=FALSE}
+
+#Ajeitando o layout de lado-a-lado
+par(mfrow=c(1, 2))
+# Criar os histogramas lado-a-lado
+hist(dados$GolsMarcados, main="", xlab="", 
+     ylab="", col="red", xlim=)
+hist(dados$GolsSofridos, main="", xlab="", 
+     ylab="", col="blue")
+
+
+#Dados Multivariados
+#ggpairs(UScrime, upper = list(
+ #  combo = "box_no_facet",
+   # discrete = "count",
+    #na = "na"
+  #), colour="y")
+
+
+
+```
+
+</center>
+  
+  
+# 4- Conclusão
+
+  (Faz-se uma síntese dos resultados, apresentando a conclusão extraída do estudo.)
