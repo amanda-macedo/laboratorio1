@@ -1,11 +1,17 @@
-pacman::p_load(readxl,dplyr)
+---
+title: "Relatório Assessoria 1"
+output: html_document
+date: "2024-04-07"
+---
 
-base <- read_xlsx('C:/Users/amand/OneDrive/Documentos/GitHub/laboratorio1/Respostas.xlsx')
+```{r, include=FALSE}
+pacman::p_load(readxl,dplyr,knitr,rmarkdown)
 
+base <- read_excel('C:/Users/amand/OneDrive/Documentos/GitHub/laboratorio1/Respostas.xlsx')
 base <- base[, -ncol(base)]
 name_columns <- c(
   "genero",
-  "outro",
+  "genero_outro",
   "idade",
   "estado_civil",
   "outro_estado_civil",
@@ -38,7 +44,7 @@ name_columns <- c(
   "como_consegue_obter_tecnologia",
   "necessita_acompanhamento/apoio_atividades_cotidianas_notrabalho",
   "se_sim_quais_atividades?",
-  "acompanhamento/apoio_disponibilizado_ufsm?",
+  "acompanhamento/apoio_disponibilizado_ufsm",
   "se_nao_como_consegue_obter",
   "como_considera_acessibilidade_arquitetonica_ufsm",
   "como_considera_acessibilidade_atitudinal_ufsm",
@@ -57,20 +63,45 @@ name_columns <- c(
   "voce_participa_associacao/sindicato/outros_grupos_luta_direitos_trabalhistas",
   "se_sim_qual_associacao/sindicato",
   "se_participa_sente_pautas_pcd_consideradas_em_acoes_da_associacao/sindicato",
-  "espaco_comentarios"
-)
+  "espaco_comentarios")
 
-# curso formacao tirei pq ha 62 categorias distintas
-# cargo tirei pq n tem padrao na escrita (42 categorias distintas)
-# unidade_lotacao variavel inutil p gente e 56 categorias distintas
-# ia tratar a variavel mora_com e outro_mora_com mas sao categorias demais e estao confusas
+# curso formacao tirei pq há 62 categorias distintas
+# cargo tirei pq não tem padrão na escrita (42 categorias distintas)
+# unidade_lotacao variável inútil para gente e 56 categorias distintas
+# ia tratar a variável mora_com e outro_mora_com mas são categorias demais e estão confusas
+# gênero_outro só tem nulo
 
-# Remocao colunas
+# Remoção colunas
 colnames(base) <- name_columns
 base1 <- base[, !colnames(base) %in% c("idade_filhos", "cargo_nivel1", "cargo_nivel2",
                                        "se_nao_como_consegue_obter","curso_formacao","cargo",
-                                       "unidade_lotacao","mora_com","outro_mora_com")]
+                                       "unidade_lotacao","mora_com","outro_mora_com","gênero_outro")]
 
+```
+## Relatório Estatístico - Projeto de Pesquisa: Relações de Trabalho e os servidores com deficiência na Universidade Federal de Santa Maria (UFSM)
+
+### Introdução
+
+O presente relatório apresenta uma análise de dados descritiva e exploratória relativa aos dados obtidos via formulário referente ao projeto de pesquisa Relações de Trabalho e os servidores com deficiência na Universidade Federal de Santa Maria (UFSM). O objetivo geral é entender qual o significado do trabalho para os servidores com deficiência na Universidade Federal de Santa Maria (UFSM) e como o capacitismo interfere nas relações laborais desses servidores. Para concretizar o objetivo geral, o presente estudo almeja realizar os seguintes objetivos específicos:
+
+* Mapear os servidores com deficiência na UFSM;
+* Compreender como se dão suas relações de trabalho na organização e se essas são ou já foram permeadas pelo capacitismo;
+* Entender qual o significado do trabalho para os servidores com deficiência na UFSM;
+* Propor alternativas e indicadores para que a área de gestão de pessoas possa facilitar a inclusão de servidores com deficiência nas relações de trabalho.
+
+
+### Base de dados
+
+Na tabela abaixo temos os dados sem nenhum tratamento. São 54 variáveis, referentes ás 54 perguntas contidas no formulário preenchido pelos servidores (a última pergunta referente ao e-mail foi removida da tabela):
+
+```{r, echo=FALSE}
+library(knitr)
+paged_table(base)
+```
+
+Na tabela abaixo vemos como a base ficou depois de alguns tratamentos e remoção de algumas variáveis que não usaremos:  
+
+```{r, include=FALSE}
 # Tratamento carga horaria semanal
 base1 <- mutate(base1, carga_horaria_semanal = ifelse(carga_horaria_semanal == 'Outra', outro_carga_horaria_semanal, carga_horaria_semanal))
 base1$carga_horaria_semanal <- gsub("\\D", "", base1$carga_horaria_semanal)
@@ -85,15 +116,27 @@ base1 <- mutate(base1, qtd_filhos = ifelse(is.na(qtd_filhos), "0", qtd_filhos))
 
 # tratamento tipo das variaveis
 base1$genero <- as.factor(base1$genero)
+```
 
+```{r, echo=FALSE}
+library(knitr)
+paged_table(base1)
+```
+
+### Análise Descritiva
+#### Gênero x Grau de satisfação para questões de acessibilidade
+Na nossa base de dados temos o mesmo número de pessoas no sexo feminino e masculino.
+```{r, include=FALSE}
 # Genero x grau de satisfacao
 # acessibilidade arquitetonica
 table(base1$genero,base1$como_considera_acessibilidade_arquitetonica_ufsm)
-prop.table(table(base1$genero))
+table(base1$genero)
 prop.table(table(base1$genero,base1$como_considera_acessibilidade_arquitetonica_ufsm))*100
+```
 
+```{r, echo=FALSE,warning=FALSE}
 x <- xtabs(~genero + como_considera_acessibilidade_arquitetonica_ufsm, data = base1)
-x <- x[, c("Ótimo", "Bom", "Regular", "Ruim", "P?ssimo")]
+x <- x[, c("Ótimo", "Bom", "Regular", "Ruim", "Péssimo")]
 cols <- c("#445a14", "#778c43")
 
 barplot(x,
@@ -107,24 +150,4 @@ legend("topright",
        bty = "n")
 box(bty = "L")
 title(main = "Avaliação da Acessibilidade Arquitetônica na UFSM por Gênero", font.main = 3)
-
-# acessibilidade atitudinal
-table(base1$genero,base1$como_considera_acessibilidade_atitudinal_ufsm)
-prop.table(table(base1$genero,base1$como_considera_acessibilidade_atitudinal_ufsm))*100
-
-x <- xtabs(~genero + como_considera_acessibilidade_atitudinal_ufsm, data = base1)
-x <- x[, c("Ótimo", "Bom", "Regular", "Ruim", "Péssimo")]
-cols <- c("#445a14", "#778c43")
-
-barplot(x,
-        beside = TRUE,
-        xlab = "Como considera a acessibilidade atitudinal na UFSM?",
-        ylab = "Frequência absoluta",
-        col = cols)
-legend("topright",
-       legend = levels(base1$genero),
-       fill = cols,
-       bty = "n")
-box(bty = "L")
-title(main = "Avaliação da Acessibilidade Atitudinal na UFSM por Gênero", font.main = 3)
-
+```
