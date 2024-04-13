@@ -135,65 +135,73 @@ title(main = "Avaliação da Acessibilidade Atitudinal na UFSM por Gênero", fon
 
 
 
-questoes <- c("como_considera_acessibilidade_comunicacional_ufsm",
-              "como_considera_acessibilidade_atitudinal_ufsm",
-              "como_considera_acessibilidade_instrumental_digital_ufsm",
-              "como_considera_acessibilidade_arquitetonica_ufsm")
-niveis <- c("otimo", "bom", "regular", "ruim", "pessimo")
-
-acessibilidade_geral_fem <- bind_rows(lapply(questoes, function(questao) {
-  prop_table <- table(base1[base1$genero == "Feminino", ][[questao]])
-  prop.table(prop_table) * 100
-}), .id = "Questão")
-
-acessibilidade_geral_fem$Questão <- c('Comunicacional','Atitudinal','Instrumental/Digital','Arquitetônica')
-acessibilidade_geral_fem <- acessibilidade_geral_fem %>%  rename('Ótimo (%)' = Ótimo, 'Bom (%)' = Bom, 'Regular (%)' = Regular, 'Ruim (%)' = Ruim,'Péssimo (%)' = Péssimo)
-
-acessibilidade_geral_masc <- bind_rows(lapply(questoes, function(questao) {
-  prop_table <- table(base1[base1$genero == "Masculino", ][[questao]])
-  prop.table(prop_table) * 100
-}), .id = "Questão")
-
-
-acessibilidade_geral_masc$Questão <- c('Comunicacional','Atitudinal','Instrumental/Digital','Arquitetônica')
-acessibilidade_geral_masc <- acessibilidade_geral_masc %>%  rename('Ótimo (%)' = Ótimo, 'Bom (%)' = Bom, 'Regular (%)' = Regular, 'Ruim (%)' = Ruim,'Péssimo (%)' = Péssimo)
-
-view(acessibilidade_geral_masc)
-view(acessibilidade_geral_fem)
 
 
 
 
 
-table(base1$campus,base1$como_considera_acessibilidade_arquitetonica_ufsm)
-table(base1$campus)
-prop.table(table(base1$campus,base1$como_considera_acessibilidade_arquitetonica_ufsm))*100
 
-base_cachoeira <- base1[base1$campus == "Cachoeira do Sul", ]
-base_cachoeira$como_considera_acessibilidade_arquitetonica_ufsm <- factor(base_cachoeira$como_considera_acessibilidade_arquitetonica_ufsm, levels = names(sort(table(base_cachoeira$como_considera_acessibilidade_arquitetonica_ufsm), decreasing = TRUE)))
 
-base_frederico <- base1[base1$campus == "Frederico Westphalen", ]
-base_frederico$como_considera_acessibilidade_arquitetonica_ufsm <- factor(base_frederico$como_considera_acessibilidade_arquitetonica_ufsm, levels = names(sort(table(base_frederico$como_considera_acessibilidade_arquitetonica_ufsm), decreasing = TRUE)))
 
-base_palmeira <- base1[base1$campus == "Palmeira das Missões", ]
-base_palmeira$como_considera_acessibilidade_arquitetonica_ufsm <- factor(base_palmeira$como_considera_acessibilidade_arquitetonica_ufsm, levels = names(sort(table(base_palmeira$como_considera_acessibilidade_arquitetonica_ufsm), decreasing = TRUE)))
 
-base_santa <- base1[base1$campus == "Santa Maria", ]
-base_santa$como_considera_acessibilidade_arquitetonica_ufsm <- factor(base_santa$como_considera_acessibilidade_arquitetonica_ufsm, levels = names(sort(table(base_santa$como_considera_acessibilidade_arquitetonica_ufsm), decreasing = TRUE)))
 
-# Pra aparecer no grafico na ordem
+
+
+# tratamento tipo das variaveis
+base1$genero <- as.factor(base1$genero)
+
+# Tratamento variáveis de satisfacao
 ordem <- c("Ótimo", "Bom", "Regular", "Ruim", "Péssimo")
 
-base_cachoeira$como_considera_acessibilidade_arquitetonica_ufsm <- factor(base_cachoeira$como_considera_acessibilidade_arquitetonica_ufsm, levels = ordem)
+base1$como_considera_acessibilidade_comunicacional_ufsm <- factor(base1$como_considera_acessibilidade_comunicacional_ufsm, levels = ordem)
 
-base_frederico$como_considera_acessibilidade_arquitetonica_ufsm <- factor(base_frederico$como_considera_acessibilidade_arquitetonica_ufsm, levels = ordem)
 
-base_palmeira$como_considera_acessibilidade_arquitetonica_ufsm <- factor(base_palmeira$como_considera_acessibilidade_arquitetonica_ufsm, levels = ordem)
+base_feminino <- base1[base1$genero == "Feminino", ]
+texto_size <- 2.5 #  tamanho do texto para as frequências
+titulo_size <- 10 # tamanho do título dos gráficos
 
-base_santa$como_considera_acessibilidade_arquitetonica_ufsm <- factor(base_santa$como_considera_acessibilidade_arquitetonica_ufsm, levels = ordem)
+grafico <- ggplot(base1, aes(x = como_considera_acessibilidade_arquitetonica_ufsm, fill = genero)) +
+  geom_bar(position = "dodge") +
+  labs(x = "Acessibilidade Arquitetônica na UFSM", y = "Frequência absoluta", fill = "Gênero") +
+  ggtitle("Avaliação da Acessibilidade Arquitetônica por Gênero") +
+  scale_fill_manual(values = c("Feminino" = "#445a14", "Masculino" = "#778c43")) +
+  theme_minimal() +
+  theme(plot.title = element_text(size = titulo_size))
+# 
+# grafico2 <- ggplot(base_feminino, aes(x = como_considera_acessibilidade_arquitetonica_ufsm)) +
+#   geom_bar(fill = "#445a14", position = "dodge") +
+#   geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
+#   labs(x = NULL, y = NULL) +
+#   ggtitle("Gênero Feminino") +
+#   theme_minimal() +
+#   theme(axis.title = element_blank(),
+#         axis.text.y = element_blank(),
+#         plot.title = element_text(hjust = 0.5, size = titulo_size))
 
-print(sprintf('Percentual de respostas bom ou otimo para campus cachoeira é de %.1f %%, para frederico é de %.1f %%, para campus palmeira é de %.1f %% e para santa é de %.1f %%,', 
-        sum(base_cachoeira$como_considera_acessibilidade_arquitetonica_ufsm %in% c("Bom", "Ótimo")) / nrow(base_cachoeira) * 100, 
-        sum(base_frederico$como_considera_acessibilidade_arquitetonica_ufsm %in% c("Bom", "Ótimo")) / nrow(base_frederico) * 100, 
-        sum(base_palmeira$como_considera_acessibilidade_arquitetonica_ufsm %in% c("Bom", "Ótimo")) / nrow(base_palmeira) * 100,
-        sum(base_santa$como_considera_acessibilidade_arquitetonica_ufsm %in% c("Bom", "Ótimo")) / nrow(base_santa) * 100))
+
+grafico2 <-base_feminino %>%
+  count(como_considera_acessibilidade_arquitetonica_ufsm) %>%
+  ggplot(aes(x = reorder(como_considera_acessibilidade_arquitetonica_ufsm, -n), y = n)) +
+  geom_bar(stat = "identity", fill = "#445a14") +
+  geom_text(aes(label = n), position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
+  labs(x = NULL, y = NULL) +
+  ggtitle("Gênero Feminino") +
+  theme_minimal() +
+  theme(axis.title = element_blank(),
+        axis.text.y = element_blank(),
+        plot.title = element_text(hjust = 0.5, size = titulo_size))
+
+grafico3 <- ggplot(base_masculino, aes(x = como_considera_acessibilidade_arquitetonica_ufsm)) +
+  geom_bar(fill = "#778c43", position = "dodge") +
+  geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
+  labs(x = NULL, y = NULL) +
+  ggtitle("Gênero Masculino") +
+  theme_minimal() +
+  theme(axis.title = element_blank(), 
+        axis.text.y = element_blank(),
+        plot.title = element_text(hjust = 0.5, size = titulo_size))
+
+grid.arrange(arrangeGrob(grafico2, grafico3, ncol = 1),
+             grafico,
+             layout_matrix = matrix(c(1, 2), ncol = 2, byrow = FALSE),
+             widths = c(1, 2))

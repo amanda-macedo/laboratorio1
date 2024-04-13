@@ -1,13 +1,20 @@
 ---
-title: "Relat√≥rio Assessoria 1"
-output: html_document
+title: "RelatÛrio Assessoria 1"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    smooth_scroll: false
+    theme: journal
+    highlight: tango
 date: "2024-04-07"
 ---
 
-```{r, include=FALSE}
-pacman::p_load(gridExtra,readxl,dplyr,knitr,rmarkdown,ggplot2)
 
-base <- read_excel('C:/Users/amand/OneDrive/Documentos/GitHub/laboratorio1/Respostas.xlsx')
+```{r, include=FALSE}
+pacman::p_load(gridExtra,dplyr,knitr,rmarkdown,ggplot2, kableExtra, stringi,xlsx,readxl,crosstable)
+
+base <- read_xlsx("Respostas.xlsx")
 base <- base[, -ncol(base)]
 name_columns <- c(
   "genero",
@@ -65,41 +72,141 @@ name_columns <- c(
   "se_participa_sente_pautas_pcd_consideradas_em_acoes_da_associacao/sindicato",
   "espaco_comentarios")
 
-# curso formacao tirei pq h√° 62 categorias distintas
-# cargo tirei pq n√£o tem padr√£o na escrita (42 categorias distintas)
-# unidade_lotacao vari√°vel in√∫til para gente e 56 categorias distintas
-# ia tratar a vari√°vel mora_com e outro_mora_com mas s√£o categorias demais e est√£o confusas
-# g√™nero_outro s√≥ tem nulo
+# curso formacao tirei pq h· 62 categorias distintas
+# cargo tirei pq n„o tem padr„o na escrita (42 categorias distintas)
+# unidade_lotacao vari·vel in˙til para gente e 56 categorias distintas
+# ia tratar a vari·vel mora_com e outro_mora_com mas s„o categorias demais e est„o confusas
+# gÍnero_outro sÛ tem nulo
 
-# Remo√ß√£o colunas
+# RemoÁ„o colunas
 colnames(base) <- name_columns
 base1 <- base[, !colnames(base) %in% c("idade_filhos", "cargo_nivel1", "cargo_nivel2",
                                        "se_nao_como_consegue_obter","curso_formacao","cargo",
-                                       "unidade_lotacao","mora_com","outro_mora_com","g√™nero_outro")]
-
+                                      "unidade_lotacao","mora_com","outro_mora_com","genero_outro")]
 ```
 
-## Relat√≥rio Estat√≠stico - Projeto de Pesquisa: Rela√ß√µes de Trabalho e os servidores com defici√™ncia na Universidade Federal de Santa Maria (UFSM)
+# RelatÛrio EstatÌstico - Projeto de Pesquisa: RelaÁıes de Trabalho e os servidores com deficiÍncia na Universidade Federal de Santa Maria (UFSM)
 
-### Introdu√ß√£o
+## IntroduÁ„o
 
-O presente relat√≥rio apresenta uma an√°lise de dados descritiva e explorat√≥ria relativa aos dados obtidos via formul√°rio referente ao projeto de pesquisa Rela√ß√µes de Trabalho e os servidores com defici√™ncia na Universidade Federal de Santa Maria (UFSM). O objetivo geral √© entender qual o significado do trabalho para os servidores com defici√™ncia na Universidade Federal de Santa Maria (UFSM) e como o capacitismo interfere nas rela√ß√µes laborais desses servidores. Para concretizar o objetivo geral, o presente estudo almeja realizar os seguintes objetivos espec√≠ficos:
+O presente relatÛrio apresenta uma an·lise de dados descritiva e exploratÛria relativa aos dados obtidos via formul·rio referente ao projeto de pesquisa RelaÁıes de Trabalho e os servidores com deficiÍncia na Universidade Federal de Santa Maria (UFSM). O objetivo geral È entender qual o significado do trabalho para os servidores com deficiÍncia na Universidade Federal de Santa Maria (UFSM) e como o capacitismo interfere nas relaÁıes laborais desses servidores. Para concretizar o objetivo geral, o presente estudo almeja realizar os seguintes objetivos especÌficos:
 
--   Mapear os servidores com defici√™ncia na UFSM;
--   Compreender como se d√£o suas rela√ß√µes de trabalho na organiza√ß√£o e se essas s√£o ou j√° foram permeadas pelo capacitismo;
--   Entender qual o significado do trabalho para os servidores com defici√™ncia na UFSM;
--   Propor alternativas e indicadores para que a √°rea de gest√£o de pessoas possa facilitar a inclus√£o de servidores com defici√™ncia nas rela√ß√µes de trabalho.
+-   Mapear os servidores com deficiÍncia na UFSM;
+-   Compreender como se d„o suas relaÁıes de trabalho na organizaÁ„o e se essas s„o ou j· foram permeadas pelo capacitismo;
+-   Entender qual o significado do trabalho para os servidores com deficiÍncia na UFSM;
+-   Propor alternativas e indicadores para que a ·rea de gest„o de pessoas possa facilitar a inclus„o de servidores com deficiÍncia nas relaÁıes de trabalho.
 
-### Base de dados
+## Materiais e mÈtodos
 
-Na tabela abaixo temos os dados sem nenhum tratamento. S√£o 54 vari√°veis, referentes √°s 54 perguntas contidas no formul√°rio preenchido pelos servidores (a √∫ltima pergunta referente ao e-mail foi removida da tabela):
+S„o 54 vari·veis, referentes ‡s 54 perguntas contidas no formul·rio preenchido pelos servidores (a ˙ltima pergunta referente ao e-mail foi removida da tabela):
 
-```{r, echo=FALSE}
-library(knitr)
-paged_table(base)
-```
+-   GÍnero
 
-Na tabela abaixo vemos como a base ficou depois de alguns tratamentos e remo√ß√£o de algumas vari√°veis que n√£o usaremos:
+-   Qual?
+
+-   Idade:
+
+-   Estado civil:
+
+-   Qual?
+
+-   Tem filhos(as)?
+
+-   Quantos:
+
+-   Idade(s):
+
+-   Mora com (mais de uma opÁ„o pode ser marcada):
+
+-   Qual?
+
+-   Escolaridade:
+
+-   Qual(is) curso(s)/·rea(s) de conhecimento da(s) sua(s) formaÁ„o(ıes)?
+
+-   Categoria:
+
+-   Cargo:
+
+-   NÌvel:
+
+-   NÌvel:
+
+-   Carga hor·ria semanal:
+
+-   Qual?
+
+-   Unidade de lotaÁ„o:
+
+-   Possui Cargo de DireÁ„o (CD) ou FunÁ„o Gratificada (FG)?
+
+-   Campus:
+
+-   Ano de ingresso como servidor na Universidade:
+
+-   Ingressou por intermÈdio do sistema de cotas para PCD?
+
+-   VocÍ se sente satisfeito/realizado/reconhecido/˙til no seu local de trabalho?
+
+-   Tipo de deficiÍncia que possui:
+
+-   Qual(is)?
+
+-   Possui o diagnÛstico desde:
+
+-   Causa:
+
+-   VocÍ utiliza alguma tecnologia assistiva/recurso?
+
+-   Qual(is)?
+
+-   Se utiliza alguma tecnologia assistiva/recurso, essa È disponibilizada pela UFSM?
+
+-   Se n„o, como vocÍ consegue obter (atravÈs de recursos prÛprios, doaÁıes, etc)?
+
+-   VocÍ necessita de algum acompanhamento ou apoio de outra pessoa para realizar as atividades cotidianas no ambiente de trabalho?
+
+-   Se necessita, em quais atividades?
+
+-   Esse acompanhamento/apoio È disponibilizado pela UFSM?
+
+-   Se n„o, como vocÍ consegue obter?
+
+-   De um modo geral, como vocÍ considera o nÌvel de acessibilidade arquitetÙnica da UFSM (Exemplos: rampas, elevadores e banheiros adaptados, calÁadas com piso t·til, vagas reservadas em estacionamentos, etc)?
+
+-   De um modo geral, como vocÍ considera o nÌvel de acessibilidade atitudinal da UFSM (incentivo a percepÁıes sem preconceitos, discriminaÁıes e estigmas)?
+
+-   De um modo geral, como vocÍ considera o nÌvel de acessibilidade instrumental/digital da UFSM (Ex: software de leitor de tela no computador, sites e aplicativos institucionais acessÌveis e ferramentas que eliminem barreiras digitais e de instrumentos de trabalho)?
+
+-   De um modo geral, como vocÍ considera o nÌvel de acessibilidade comunicacional da UFSM (oferecimento de recursos e atividades que promovam a independÍncia no acesso a qualquer conte˙do. Isso inclui legendas, ·udios, descriÁıes, Libras, braile, etc)?
+
+-   VocÍ conhece a legislaÁ„o brasileira sobre acessibilidade?
+
+-   Qual seu objetivo quando fez o concurso para a UFSM (mais de uma opÁ„o pode ser marcada)?
+
+-   Qual(is)?
+
+-   VocÍ sentiu dificuldade de adaptaÁ„o durante o ingresso nas atividades laborais na UFSM?
+
+-   Se sim, poderia relatar? Como foi resolvido?
+
+-   VocÍ enfrentou algum problema de relacionamento interpessoal com chefias e/ou colegas?
+
+-   Se sim, poderia relatar? Como foi resolvido?
+
+-   VocÍ j· foi parte reclamante, na UFSM, em algum Processo administrativo disciplinar (PAD), Sindic‚ncia e/ou reclamatÛria trabalhista?
+
+-   VocÍ considera que a UFSM dispıe de recursos humanos e materiais suficientes para atender necessidades que possam eventualmente surgir relacionadas a acessibilidade?
+
+-   Se n„o, poderia relatar o que considera insuficiente?
+
+-   VocÍ participa de alguma associaÁ„o, sindicato, ou outros grupos de luta por defesa de direitos trabalhistas?
+
+-   Qual?
+
+-   Se participa, vocÍ sente que as pautas das PCD s„o consideradas nas aÁıes dessa associaÁ„o/sindicato/grupo?
+
+-   EspaÁo para outros coment·rios e informaÁıes que vocÍ queira nos passar sobre inclus„o e acessibilidade na UFSM:
 
 ```{r, include=FALSE}
 # Tratamento carga horaria semanal
@@ -116,73 +223,82 @@ base1 <- mutate(base1, qtd_filhos = ifelse(is.na(qtd_filhos), "0", qtd_filhos))
 
 # tratamento tipo das variaveis
 base1$genero <- as.factor(base1$genero)
+
+# Para os graficos ficarem nesta ordem
+ordem <- c("”timo", "Bom", "Regular", "Ruim", "PÈssimo")
 ```
 
-```{r, echo=FALSE}
-library(knitr)
-paged_table(base1)
-```
+## An·lise Descritiva
 
-### An√°lise Descritiva
+Nesta seÁ„o iremos desenvolver as seguintes an·lises:
 
-#### G√™nero x Grau de satisfa√ß√£o para quest√µes de acessibilidade
+-   GÍnero X grau de satisfaÁ„o (em todas as questıes de acessibilidade)
 
-Na nossa base de dados temos o mesmo n√∫mero de pessoas no sexo feminino e masculino, ambos com 32 pessoas. Abaixo temos o gr√°fico de barras que mostra a quantidade de respostas em cada n√≠vel para cada g√™nero para quest√µes de opini√£o em rela√ß√£o √† acessibilidade.
+-   Campi x grau de satisfaÁ„o (em todas as questıes de acessibilidade)
+
+-   Idade X grau de satisfaÁ„o (em todas as questıes de acessibilidade)
+
+-   Tipos de deficiÍncia mais comum X grau de satisfaÁ„o (em todas as questıes de acessibilidade)
+
+-   Data de ingresso X entrada por cotas
+
+-   Idade X conhecimento da legislaÁ„o
+
+-   Objetivo de fazer o concurso X grau de satisfaÁ„o.
+
+-   SatisfaÁ„o X tempo de serviÁo
+
+-   SatisfaÁ„o X escolaridade
+
+-   SatisfaÁ„o X setores
+
+### GÍnero x Grau de satisfaÁ„o para questıes de acessibilidade
+
+Na nossa base de dados temos o mesmo n˙mero de pessoas no sexo feminino e masculino, ambos com 32 pessoas. Abaixo temos o gr·fico de barras que mostra a quantidade de respostas em cada nÌvel para cada gÍnero para questıes de opini„o em relaÁ„o ‡ acessibilidade.
 
 ```{r, include=FALSE}
 # Genero x grau de satisfacao
 # acessibilidade arquitetonica
-table(base1$genero,base1$como_considera_acessibilidade_arquitetonica_ufsm)
 table(base1$genero)
-prop.table(table(base1$genero,base1$como_considera_acessibilidade_arquitetonica_ufsm))*100
+table(base1$genero,base1$como_considera_acessibilidade_arquitetonica_ufsm)
 
 base_feminino <- base1[base1$genero == "Feminino", ]
-base_feminino$como_considera_acessibilidade_arquitetonica_ufsm <- factor(base_feminino$como_considera_acessibilidade_arquitetonica_ufsm, levels = names(sort(table(base_feminino$como_considera_acessibilidade_arquitetonica_ufsm), decreasing = TRUE)))
-
 base_masculino <- base1[base1$genero == "Masculino", ]
-base_masculino$como_considera_acessibilidade_arquitetonica_ufsm <- factor(base_masculino$como_considera_acessibilidade_arquitetonica_ufsm, levels = names(sort(table(base_masculino$como_considera_acessibilidade_arquitetonica_ufsm), decreasing = TRUE)))
 
-# Pra aparecer no grafico na ordem
-ordem <- c("√ìtimo", "Bom", "Regular", "Ruim", "P√©ssimo")
-
-base_feminino$como_considera_acessibilidade_arquitetonica_ufsm <- factor(base_feminino$como_considera_acessibilidade_arquitetonica_ufsm, levels = ordem)
-base_masculino$como_considera_acessibilidade_arquitetonica_ufsm <- factor(base_masculino$como_considera_acessibilidade_arquitetonica_ufsm, levels = ordem)
-base1$como_considera_acessibilidade_arquitetonica_ufsm <- factor(base1$como_considera_acessibilidade_arquitetonica_ufsm, levels = ordem)
-
-print(sprintf('Percentual de respostas bom ou regular para os homens √© de %.1f %% e para mulheres √© de %.1f %%', 
-               sum(base_masculino$como_considera_acessibilidade_arquitetonica_ufsm %in% c("Bom", "√ìtimo")) / nrow(base_masculino) * 100, 
-               sum(base_feminino$como_considera_acessibilidade_arquitetonica_ufsm %in% c("Bom", "√ìtimo")) / nrow(base_feminino) * 100))
+print(sprintf('Percentual de respostas bom ou regular para os homens È de %.1f %% e para mulheres È de %.1f %%', 
+               sum(base_masculino$como_considera_acessibilidade_arquitetonica_ufsm %in% c("Bom", "”timo")) / nrow(base_masculino) * 100, 
+               sum(base_feminino$como_considera_acessibilidade_arquitetonica_ufsm %in% c("Bom", "”timo")) / nrow(base_feminino) * 100))
 ```
 
-Em rela√ß√£o acessibilidade arquitet√¥nica da UFSM (Exemplos: rampas, elevadores e banheiros adaptados, cal√ßadas com piso t√°til, vagas reservadas em estacionamentos, etc), os homens parecem estar mais satisfeitos do que as mulheres, em geral. Cerca de 37,5% das mulheres responderam bom ou √≥timo e, para os homens, este percentual fica em 46,9%.  
+Em relaÁ„o acessibilidade arquitetÙnica da UFSM (Exemplos: rampas, elevadores e banheiros adaptados, calÁadas com piso t·til, vagas reservadas em estacionamentos, etc), os homens parecem estar mais satisfeitos do que as mulheres, em geral. Cerca de 37,5% das mulheres responderam bom ou Ûtimo e, para os homens, este percentual fica em 46,9%.
 
 ```{r, echo=FALSE,warning=FALSE,warning=FALSE,fig.height=6, fig.width=10}
-texto_size <- 2.5 #  tamanho do texto para as frequ√™ncias
-titulo_size <- 10 # tamanho do t√≠tulo dos gr√°ficos
+texto_size <- 2.5 #  tamanho do texto para as frequÍncias
+titulo_size <- 10 # tamanho do tÌtulo dos gr·ficos
 
-grafico <- ggplot(base1, aes(x = como_considera_acessibilidade_arquitetonica_ufsm, fill = genero)) +
+grafico <- ggplot(base1, aes(x = factor(como_considera_acessibilidade_arquitetonica_ufsm,levels=ordem), fill = genero)) +
   geom_bar(position = "dodge") +
-  labs(x = "Acessibilidade Arquitet√¥nica na UFSM", y = "Frequ√™ncia absoluta", fill = "G√™nero") +
-  ggtitle("Avalia√ß√£o da Acessibilidade Arquitet√¥nica por G√™nero") +
+  labs(x = "Acessibilidade ArquitetÙnica na UFSM", y = "FrequÍncia absoluta", fill = "GÍnero") +
+  ggtitle("AvaliaÁ„o da Acessibilidade ArquitetÙnica por GÍnero") +
   scale_fill_manual(values = c("Feminino" = "#445a14", "Masculino" = "#778c43")) +
   theme_minimal() +
-  theme(plot.title = element_text(size = titulo_size))
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5))
 
-grafico2 <- ggplot(base_feminino, aes(x = como_considera_acessibilidade_arquitetonica_ufsm)) +
-  geom_bar(fill = "#445a14", position = "dodge") +
+grafico2 <- ggplot(base_feminino, aes(x = factor(como_considera_acessibilidade_comunicacional_ufsm, levels = ordem))) +
+  geom_bar(fill = "#445a14") +
   geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
   labs(x = NULL, y = NULL) +
-  ggtitle("G√™nero Feminino") +
+  ggtitle("GÍnero Feminino") +
   theme_minimal() +
-  theme(axis.title = element_blank(), 
+  theme(axis.title = element_blank(),
         axis.text.y = element_blank(),
         plot.title = element_text(hjust = 0.5, size = titulo_size))
 
-grafico3 <- ggplot(base_masculino, aes(x = como_considera_acessibilidade_arquitetonica_ufsm)) +
+grafico3 <- ggplot(base_masculino,  aes(x = factor(como_considera_acessibilidade_comunicacional_ufsm, levels = ordem))) +
   geom_bar(fill = "#778c43", position = "dodge") +
   geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
   labs(x = NULL, y = NULL) +
-  ggtitle("G√™nero Masculino") +
+  ggtitle("GÍnero Masculino") +
   theme_minimal() +
   theme(axis.title = element_blank(), 
         axis.text.y = element_blank(),
@@ -193,8 +309,6 @@ grid.arrange(arrangeGrob(grafico2, grafico3, ncol = 1),
              layout_matrix = matrix(c(1, 2), ncol = 2, byrow = FALSE),
              widths = c(1, 2))
 ```
-
-
 
 ```{r, include=FALSE}
 # instrumental/digital
@@ -202,52 +316,42 @@ table(base1$genero,base1$como_considera_acessibilidade_instrumental_digital_ufsm
 prop.table(table(base1$genero,base1$como_considera_acessibilidade_instrumental_digital_ufsm))*100
 
 base_feminino <- base1[base1$genero == "Feminino", ]
-base_feminino$como_considera_acessibilidade_instrumental_digital_ufsm <- factor(base_feminino$como_considera_acessibilidade_instrumental_digital_ufsm, levels = names(sort(table(base_feminino$como_considera_acessibilidade_instrumental_digital_ufsm), decreasing = TRUE)))
-
 base_masculino <- base1[base1$genero == "Masculino", ]
-base_masculino$como_considera_acessibilidade_instrumental_digital_ufsm <- factor(base_masculino$como_considera_acessibilidade_instrumental_digital_ufsm, levels = names(sort(table(base_masculino$como_considera_acessibilidade_instrumental_digital_ufsm), decreasing = TRUE)))
 
-# Pra aparecer no grafico na ordem
-ordem <- c("√ìtimo", "Bom", "Regular", "Ruim", "P√©ssimo")
-
-base_feminino$como_considera_acessibilidade_instrumental_digital_ufsm <- factor(base_feminino$como_considera_acessibilidade_instrumental_digital_ufsm, levels = ordem)
-base_masculino$como_considera_acessibilidade_instrumental_digital_ufsm <- factor(base_masculino$como_considera_acessibilidade_instrumental_digital_ufsm, levels = ordem)
-base1$como_considera_acessibilidade_instrumental_digital_ufsm <- factor(base1$como_considera_acessibilidade_instrumental_digital_ufsm, levels = ordem)
-
-print(sprintf('Percentual de respostas bom ou regular para os homens √© de %.1f %% e para mulheres √© de %.1f %%', 
-               sum(base_masculino$como_considera_acessibilidade_instrumental_digital_ufsm %in% c("Bom", "√ìtimo")) / nrow(base_masculino) * 100, 
-               sum(base_feminino$como_considera_acessibilidade_instrumental_digital_ufsm %in% c("Bom", "√ìtimo")) / nrow(base_feminino) * 100))
+print(sprintf('Percentual de respostas bom ou regular para os homens È de %.1f %% e para mulheres È de %.1f %%', 
+               sum(base_masculino$como_considera_acessibilidade_instrumental_digital_ufsm %in% c("Bom", "”timo")) / nrow(base_masculino) * 100, 
+               sum(base_feminino$como_considera_acessibilidade_instrumental_digital_ufsm %in% c("Bom", "”timo")) / nrow(base_feminino) * 100))
 ```
 
-Em rela√ß√£o acessibilidade instrumental/digital da UFSM (Ex: software de leitor de tela no computador, sites e aplicativos institucionais acess√≠veis e ferramentas que eliminem barreiras digitais e de instrumentos de trabalho), os homens tamb√©m parecem estar mais satisfeitos do que as mulheres, em geral. Cerca de 37,5% das mulheres responderam bom ou √≥timo e, para os homens, este percentual fica em 50%.  
+Em relaÁ„o acessibilidade instrumental/digital da UFSM (Ex: software de leitor de tela no computador, sites e aplicativos institucionais acessÌveis e ferramentas que eliminem barreiras digitais e de instrumentos de trabalho), os homens tambÈm parecem estar mais satisfeitos do que as mulheres, em geral. Cerca de 37,5% das mulheres responderam bom ou Ûtimo e, para os homens, este percentual fica em 50%.
 
 ```{r, echo=FALSE,warning=FALSE,warning=FALSE,fig.height=6, fig.width=10}
-texto_size <- 2.5 #  tamanho do texto para as frequ√™ncias
-titulo_size <- 10 # tamanho do t√≠tulo dos gr√°ficos
+texto_size <- 2.5 #  tamanho do texto para as frequÍncias
+titulo_size <- 10 # tamanho do tÌtulo dos gr·ficos
 
-grafico <- ggplot(base1, aes(x = como_considera_acessibilidade_instrumental_digital_ufsm, fill = genero)) +
+grafico <- ggplot(base1, aes(x = factor( como_considera_acessibilidade_instrumental_digital_ufsm,levels=ordem), fill = genero)) +
   geom_bar(position = "dodge") +
-  labs(x = "Acessibilidade Instrumental/Digital na UFSM", y = "Frequ√™ncia absoluta", fill = "G√™nero") +
-  ggtitle("Avalia√ß√£o da Acessibilidade Instrumental/Digital por G√™nero") +
+  labs(x = "Acessibilidade Instrumental/Digital na UFSM", y = "FrequÍncia absoluta", fill = "GÍnero") +
+  ggtitle("AvaliaÁ„o da Acessibilidade Instrumental/Digital por GÍnero") +
   scale_fill_manual(values = c("Feminino" = "#445a14", "Masculino" = "#778c43")) +
   theme_minimal() +
-  theme(plot.title = element_text(size = titulo_size))
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5))
 
-grafico2 <- ggplot(base_feminino, aes(x = como_considera_acessibilidade_instrumental_digital_ufsm)) +
+grafico2 <- ggplot(base_feminino, aes(x = factor(como_considera_acessibilidade_instrumental_digital_ufsm,levels=ordem))) +
   geom_bar(fill = "#445a14", position = "dodge") +
   geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
   labs(x = NULL, y = NULL) +
-  ggtitle("G√™nero Feminino") +
+  ggtitle("GÍnero Feminino") +
   theme_minimal() +
   theme(axis.title = element_blank(), 
         axis.text.y = element_blank(),
         plot.title = element_text(hjust = 0.5, size = titulo_size))
 
-grafico3 <- ggplot(base_masculino, aes(x = como_considera_acessibilidade_instrumental_digital_ufsm)) +
+grafico3 <- ggplot(base_masculino, aes(x = factor(como_considera_acessibilidade_instrumental_digital_ufsm,levels=ordem))) +
   geom_bar(fill = "#778c43", position = "dodge") +
   geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
   labs(x = NULL, y = NULL) +
-  ggtitle("G√™nero Masculino") +
+  ggtitle("GÍnero Masculino") +
   theme_minimal() +
   theme(axis.title = element_blank(), 
         axis.text.y = element_blank(),
@@ -258,9 +362,6 @@ grid.arrange(arrangeGrob(grafico2, grafico3, ncol = 1),
              layout_matrix = matrix(c(1, 2), ncol = 2, byrow = FALSE),
              widths = c(1, 2))
 ```
-
-
-
 
 ```{r, include=FALSE}
 # instrumental/digital
@@ -268,52 +369,42 @@ table(base1$genero,base1$como_considera_acessibilidade_atitudinal_ufsm)
 prop.table(table(base1$genero,base1$como_considera_acessibilidade_atitudinal_ufsm))*100
 
 base_feminino <- base1[base1$genero == "Feminino", ]
-base_feminino$como_considera_acessibilidade_atitudinal_ufsm <- factor(base_feminino$como_considera_acessibilidade_atitudinal_ufsm, levels = names(sort(table(base_feminino$como_considera_acessibilidade_atitudinal_ufsm), decreasing = TRUE)))
-
 base_masculino <- base1[base1$genero == "Masculino", ]
-base_masculino$como_considera_acessibilidade_atitudinal_ufsm <- factor(base_masculino$como_considera_acessibilidade_atitudinal_ufsm, levels = names(sort(table(base_masculino$como_considera_acessibilidade_atitudinal_ufsm), decreasing = TRUE)))
 
-# Pra aparecer no grafico na ordem
-ordem <- c("√ìtimo", "Bom", "Regular", "Ruim", "P√©ssimo")
-
-base_feminino$como_considera_acessibilidade_atitudinal_ufsm <- factor(base_feminino$como_considera_acessibilidade_atitudinal_ufsm, levels = ordem)
-base_masculino$como_considera_acessibilidade_atitudinal_ufsm <- factor(base_masculino$como_considera_acessibilidade_atitudinal_ufsm, levels = ordem)
-base1$como_considera_acessibilidade_atitudinal_ufsm <- factor(base1$como_considera_acessibilidade_atitudinal_ufsm, levels = ordem)
-
-print(sprintf('Percentual de respostas bom ou regular para os homens √© de %.1f %% e para mulheres √© de %.1f %%', 
-               sum(base_masculino$como_considera_acessibilidade_atitudinal_ufsm %in% c("Bom", "√ìtimo")) / nrow(base_masculino) * 100, 
-               sum(base_feminino$como_considera_acessibilidade_atitudinal_ufsm %in% c("Bom", "√ìtimo")) / nrow(base_feminino) * 100))
+print(sprintf('Percentual de respostas bom ou regular para os homens È de %.1f %% e para mulheres È de %.1f %%', 
+               sum(base_masculino$como_considera_acessibilidade_atitudinal_ufsm %in% c("Bom", "”timo")) / nrow(base_masculino) * 100, 
+               sum(base_feminino$como_considera_acessibilidade_atitudinal_ufsm %in% c("Bom", "”timo")) / nrow(base_feminino) * 100))
 ```
 
-Em rela√ß√£o acessibilidade atitudinal da UFSM (incentivo a percep√ß√µes sem preconceitos, discrimina√ß√µes e estigmas), os homens novamnete se mostram mais satisfeitos do que as mulheres, em geral. Cerca de 43,8% das mulheres responderam bom ou √≥timo e, para os homens, este percentual fica em 59,4%.  
+Em relaÁ„o acessibilidade atitudinal da UFSM (incentivo a percepÁıes sem preconceitos, discriminaÁıes e estigmas), os homens novamnete se mostram mais satisfeitos do que as mulheres, em geral. Cerca de 43,8% das mulheres responderam bom ou Ûtimo e, para os homens, este percentual fica em 59,4%.
 
 ```{r, echo=FALSE,warning=FALSE,warning=FALSE,fig.height=6, fig.width=10}
-texto_size <- 2.5 #  tamanho do texto para as frequ√™ncias
-titulo_size <- 10 # tamanho do t√≠tulo dos gr√°ficos
+texto_size <- 2.5 #  tamanho do texto para as frequÍncias
+titulo_size <- 10 # tamanho do tÌtulo dos gr·ficos
 
-grafico <- ggplot(base1, aes(x = como_considera_acessibilidade_atitudinal_ufsm, fill = genero)) +
+grafico <- ggplot(base1, aes(x = factor(como_considera_acessibilidade_atitudinal_ufsm, levels=ordem),fill = genero)) +
   geom_bar(position = "dodge") +
-  labs(x = "Acessibilidade Atitudinal na UFSM", y = "Frequ√™ncia absoluta", fill = "G√™nero") +
-  ggtitle("Avalia√ß√£o da Acessibilidade Atitudinal por G√™nero") +
+  labs(x = "Acessibilidade Atitudinal na UFSM", y = "FrequÍncia absoluta", fill = "GÍnero") +
+  ggtitle("AvaliaÁ„o da Acessibilidade Atitudinal por GÍnero") +
   scale_fill_manual(values = c("Feminino" = "#445a14", "Masculino" = "#778c43")) +
   theme_minimal() +
-  theme(plot.title = element_text(size = titulo_size))
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5))
 
-grafico2 <- ggplot(base_feminino, aes(x = como_considera_acessibilidade_atitudinal_ufsm)) +
+grafico2 <- ggplot(base_feminino, aes(x = factor(como_considera_acessibilidade_atitudinal_ufsm,levels=ordem))) +
   geom_bar(fill = "#445a14", position = "dodge") +
   geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
   labs(x = NULL, y = NULL) +
-  ggtitle("G√™nero Feminino") +
+  ggtitle("GÍnero Feminino") +
   theme_minimal() +
   theme(axis.title = element_blank(), 
         axis.text.y = element_blank(),
         plot.title = element_text(hjust = 0.5, size = titulo_size))
 
-grafico3 <- ggplot(base_masculino, aes(x = como_considera_acessibilidade_atitudinal_ufsm)) +
+grafico3 <- ggplot(base_masculino, aes(x = factor(como_considera_acessibilidade_atitudinal_ufsm,levels=ordem))) +
   geom_bar(fill = "#778c43", position = "dodge") +
   geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
   labs(x = NULL, y = NULL) +
-  ggtitle("G√™nero Masculino") +
+  ggtitle("GÍnero Masculino") +
   theme_minimal() +
   theme(axis.title = element_blank(), 
         axis.text.y = element_blank(),
@@ -324,8 +415,6 @@ grid.arrange(arrangeGrob(grafico2, grafico3, ncol = 1),
              layout_matrix = matrix(c(1, 2), ncol = 2, byrow = FALSE),
              widths = c(1, 2))
 ```
-
-
 
 ```{r, include=FALSE}
 # comunicacional
@@ -333,52 +422,42 @@ table(base1$genero,base1$como_considera_acessibilidade_comunicacional_ufsm)
 prop.table(table(base1$genero,base1$como_considera_acessibilidade_comunicacional_ufsm))*100
 
 base_feminino <- base1[base1$genero == "Feminino", ]
-base_feminino$como_considera_acessibilidade_comunicacional_ufsm <- factor(base_feminino$como_considera_acessibilidade_comunicacional_ufsm, levels = names(sort(table(base_feminino$como_considera_acessibilidade_comunicacional_ufsm), decreasing = TRUE)))
-
 base_masculino <- base1[base1$genero == "Masculino", ]
-base_masculino$como_considera_acessibilidade_comunicacional_ufsm <- factor(base_masculino$como_considera_acessibilidade_comunicacional_ufsm, levels = names(sort(table(base_masculino$como_considera_acessibilidade_comunicacional_ufsm), decreasing = TRUE)))
 
-# Pra aparecer no grafico na ordem
-ordem <- c("√ìtimo", "Bom", "Regular", "Ruim", "P√©ssimo")
-
-base_feminino$como_considera_acessibilidade_comunicacional_ufsm <- factor(base_feminino$como_considera_acessibilidade_comunicacional_ufsm, levels = ordem)
-base_masculino$como_considera_acessibilidade_comunicacional_ufsm <- factor(base_masculino$como_considera_acessibilidade_comunicacional_ufsm, levels = ordem)
-base1$como_considera_acessibilidade_comunicacional_ufsm <- factor(base1$como_considera_acessibilidade_comunicacional_ufsm, levels = ordem)
-
-print(sprintf('Percentual de respostas bom ou regular para os homens √© de %.1f %% e para mulheres √© de %.1f %%',
-               sum(base_masculino$como_considera_acessibilidade_comunicacional_ufsm %in% c("Bom", "√ìtimo")) / nrow(base_masculino) * 100, 
-               sum(base_feminino$como_considera_acessibilidade_comunicacional_ufsm %in% c("Bom", "√ìtimo")) / nrow(base_feminino) * 100))
+print(sprintf('Percentual de respostas bom ou regular para os homens È de %.1f %% e para mulheres È de %.1f %%',
+               sum(base_masculino$como_considera_acessibilidade_comunicacional_ufsm %in% c("Bom", "”timo")) / nrow(base_masculino) * 100, 
+               sum(base_feminino$como_considera_acessibilidade_comunicacional_ufsm %in% c("Bom", "”timo")) / nrow(base_feminino) * 100))
 ```
 
-Em rela√ß√£o acessibilidade comunicacional da UFSM (oferecimento de recursos e atividades que promovam a independ√™ncia no acesso a qualquer conte√∫do. Isso inclui legendas, √°udios, descri√ß√µes, Libras, braile, etc), os homens novamnete se mostram mais satisfeitos do que as mulheres, em geral. Cerca de 28,1% das mulheres responderam bom ou √≥timo e, para os homens, este percentual fica em 56,2%.  
+Em relaÁ„o acessibilidade comunicacional da UFSM (oferecimento de recursos e atividades que promovam a independÍncia no acesso a qualquer conte˙do. Isso inclui legendas, ·udios, descriÁıes, Libras, braile, etc), os homens novamnete se mostram mais satisfeitos do que as mulheres, em geral. Cerca de 28,1% das mulheres responderam bom ou Ûtimo e, para os homens, este percentual fica em 56,2%.
 
 ```{r, echo=FALSE,warning=FALSE,warning=FALSE,fig.height=6, fig.width=10}
-texto_size <- 2.5 #  tamanho do texto para as frequ√™ncias
-titulo_size <- 10 # tamanho do t√≠tulo dos gr√°ficos
+texto_size <- 2.5 #  tamanho do texto para as frequÍncias
+titulo_size <- 10 # tamanho do tÌtulo dos gr·ficos
 
-grafico <- ggplot(base1, aes(x = como_considera_acessibilidade_comunicacional_ufsm, fill = genero)) +
+grafico <- ggplot(base1, aes(x = factor(como_considera_acessibilidade_comunicacional_ufsm,levels = ordem), fill = genero)) +
   geom_bar(position = "dodge") +
-  labs(x = "Acessibilidade Comunicacional na UFSM", y = "Frequ√™ncia absoluta", fill = "G√™nero") +
-  ggtitle("Avalia√ß√£o da Acessibilidade Comunicacional por G√™nero") +
+  labs(x = "Acessibilidade Comunicacional na UFSM", y = "FrequÍncia absoluta", fill = "GÍnero") +
+  ggtitle("AvaliaÁ„o da Acessibilidade Comunicacional por GÍnero") +
   scale_fill_manual(values = c("Feminino" = "#445a14", "Masculino" = "#778c43")) +
   theme_minimal() +
-  theme(plot.title = element_text(size = titulo_size))
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5))
 
-grafico2 <- ggplot(base_feminino, aes(x = como_considera_acessibilidade_comunicacional_ufsm)) +
+grafico2 <- ggplot(base_feminino, aes(x = factor(como_considera_acessibilidade_comunicacional_ufsm, levels = ordem))) +
   geom_bar(fill = "#445a14", position = "dodge") +
   geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
   labs(x = NULL, y = NULL) +
-  ggtitle("G√™nero Feminino") +
+  ggtitle("GÍnero Feminino") +
   theme_minimal() +
   theme(axis.title = element_blank(), 
         axis.text.y = element_blank(),
         plot.title = element_text(hjust = 0.5, size = titulo_size))
 
-grafico3 <- ggplot(base_masculino, aes(x = como_considera_acessibilidade_comunicacional_ufsm)) +
+grafico3 <- ggplot(base_masculino, aes(x = factor(como_considera_acessibilidade_comunicacional_ufsm, levels = ordem))) +
   geom_bar(fill = "#778c43", position = "dodge") +
   geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
   labs(x = NULL, y = NULL) +
-  ggtitle("G√™nero Masculino") +
+  ggtitle("GÍnero Masculino") +
   theme_minimal() +
   theme(axis.title = element_blank(), 
         axis.text.y = element_blank(),
@@ -390,307 +469,107 @@ grid.arrange(arrangeGrob(grafico2, grafico3, ncol = 1),
              widths = c(1, 2))
 ```
 
-Abaixo a tabela mostra a vis√£o geral de como cada g√™nero enxerga as quest√µes de acessibilidade. Para as mulheres ..........
 
-```{r, echo=FALSE,warning=FALSE,warning=FALSE}
-questoes <- c("como_considera_acessibilidade_comunicacional_ufsm",
-              "como_considera_acessibilidade_atitudinal_ufsm",
-              "como_considera_acessibilidade_instrumental_digital_ufsm",
-              "como_considera_acessibilidade_arquitetonica_ufsm")
-niveis <- c("otimo", "bom", "regular", "ruim", "pessimo")
 
-acessibilidade_geral_fem <- bind_rows(lapply(questoes, function(questao) {
-  prop_table <- table(base1[base1$genero == "Feminino", ][[questao]])
-  prop.table(prop_table) * 100
-}), .id = "Quest√£o")
 
-acessibilidade_geral_fem$Quest√£o <- c('Comunicacional','Atitudinal','Instrumental/Digital','Arquitet√¥nica')
-acessibilidade_geral_fem <- acessibilidade_geral_fem %>%  rename('√ìtimo (%)' = √ìtimo, 'Bom (%)' = Bom, 'Regular (%)' = Regular, 'Ruim (%)' = Ruim,'P√©ssimo (%)' = P√©ssimo)
 
-acessibilidade_geral_masc <- bind_rows(lapply(questoes, function(questao) {
-  prop_table <- table(base1[base1$genero == "Masculino", ][[questao]])
-  prop.table(prop_table) * 100
-}), .id = "Quest√£o")
 
-acessibilidade_geral_masc$Quest√£o <- c('Comunicacional','Atitudinal','Instrumental/Digital','Arquitet√¥nica')
-acessibilidade_geral_masc <- acessibilidade_geral_masc %>%  rename('√ìtimo (%)' = √ìtimo, 'Bom (%)' = Bom, 'Regular (%)' = Regular, 'Ruim (%)' = Ruim,'P√©ssimo (%)' = P√©ssimo)
+### Campi x Grau de satisfaÁ„o para questıes de acessibilidade
 
-knitr::kable(acessibilidade_geral_masc)
-knitr::kable(acessibilidade_geral_fem)
-```
-#### Campi x Grau de satisfa√ß√£o para quest√µes de acessibilidade
-
-Na nossa base de dados temos 59 pessoas do campus de Santa Maria, 3 de Cachoeira do Sul, 1 de Frederico Westphalene 1 de Palmeira das Miss√µes. Abaixo temos o gr√°fico de barras que mostra a quantidade de respostas em cada n√≠vel para cada campus para quest√µes de opini√£o em rela√ß√£o √† acessibilidade.  
+Na nossa base de dados temos 59 pessoas do campus de Santa Maria, 3 de Cachoeira do Sul, 1 de Frederico Westphalene 1 de Palmeira das Missıes. Abaixo temos o gr·fico de barras que mostra a quantidade de respostas em cada nÌvel para cada campus para questıes de opini„o em relaÁ„o ‡ acessibilidade.
+Primeiro vamos olhar pros resultados dos servidores de Santa Maria, j· que s„o a maioria na nossa base.
 
 ```{r, include=FALSE}
 # campus x grau de satisfacao
 # acessibilidade arquitetonica
-table(base1$campus,base1$como_considera_acessibilidade_arquitetonica_ufsm)
 table(base1$campus)
-prop.table(table(base1$campus,base1$como_considera_acessibilidade_arquitetonica_ufsm))*100
+table(base1$campus,base1$como_considera_acessibilidade_arquitetonica_ufsm)
 
-base_cachoeira <- base1[base1$campus == "Cachoeira do Sul", ]
-base_cachoeira$como_considera_acessibilidade_arquitetonica_ufsm <- factor(base_cachoeira$como_considera_acessibilidade_arquitetonica_ufsm, levels = names(sort(table(base_cachoeira$como_considera_acessibilidade_arquitetonica_ufsm), decreasing = TRUE)))
+base_cachoeira <- base1[base1$campus == unname(unlist(unique(base1$campus)))[2], ]
+base_frederico <- base1[base1$campus == unname(unlist(unique(base1$campus)))[4], ]
+base_palmeiras <- base1[base1$campus == unname(unlist(unique(base1$campus)))[3], ]
+base_santa  <- base1[base1$campus == unname(unlist(unique(base1$campus)))[1], ]
 
-base_frederico <- base1[base1$campus == "Frederico Westphalen", ]
-base_frederico$como_considera_acessibilidade_arquitetonica_ufsm <- factor(base_frederico$como_considera_acessibilidade_arquitetonica_ufsm, levels = names(sort(table(base_frederico$como_considera_acessibilidade_arquitetonica_ufsm), decreasing = TRUE)))
-
-base_palmeira <- base1[base1$campus == "Palmeira das Miss√µes", ]
-base_palmeira$como_considera_acessibilidade_arquitetonica_ufsm <- factor(base_palmeira$como_considera_acessibilidade_arquitetonica_ufsm, levels = names(sort(table(base_palmeira$como_considera_acessibilidade_arquitetonica_ufsm), decreasing = TRUE)))
-
-base_santa <- base1[base1$campus == "Santa Maria", ]
-base_santa$como_considera_acessibilidade_arquitetonica_ufsm <- factor(base_santa$como_considera_acessibilidade_arquitetonica_ufsm, levels = names(sort(table(base_santa$como_considera_acessibilidade_arquitetonica_ufsm), decreasing = TRUE)))
-
-# Pra aparecer no grafico na ordem
-ordem <- c("√ìtimo", "Bom", "Regular", "Ruim", "P√©ssimo")
-
-base_cachoeira$como_considera_acessibilidade_arquitetonica_ufsm <- factor(base_cachoeira$como_considera_acessibilidade_arquitetonica_ufsm, levels = ordem)
-
-base_frederico$como_considera_acessibilidade_arquitetonica_ufsm <- factor(base_frederico$como_considera_acessibilidade_arquitetonica_ufsm, levels = ordem)
-
-base_palmeira$como_considera_acessibilidade_arquitetonica_ufsm <- factor(base_palmeira$como_considera_acessibilidade_arquitetonica_ufsm, levels = ordem)
-
-base_santa$como_considera_acessibilidade_arquitetonica_ufsm <- factor(base_santa$como_considera_acessibilidade_arquitetonica_ufsm, levels = ordem)
-
+print(sprintf('Percentual de respostas ruim ou pÈssimo para os arquitetÙnica È de %.1f %%, para comunicacional È de %.1f %%, para instrumental È de %.1f %% e atitudinal È de %.1f %%', 
+               sum(base_santa$como_considera_acessibilidade_arquitetonica_ufsm %in% c("Ruim", "PÈssimo")) / nrow(base_santa) * 100, 
+               sum(base_santa$como_considera_acessibilidade_comunicacional_ufsm %in% c("Ruim", "PÈssimo")) / nrow(base_santa) * 100,
+              sum(base_santa$como_considera_acessibilidade_instrumental_digital_ufsm %in% c("Ruim", "PÈssimo")) / nrow(base_santa) * 100, 
+              sum(base_santa$como_considera_acessibilidade_atitudinal_ufsm %in% c("Ruim", "PÈssimo")) / nrow(base_santa) * 100 ))
 ```
 
-Em rela√ß√£o acessibilidade arquitet√¥nica da UFSM (Exemplos: rampas, elevadores e banheiros adaptados, cal√ßadas com piso t√°til, vagas reservadas em estacionamentos, etc), XXX
+Em relaÁ„o ‡s questıes de acessibilidade da UFSM para servidores de Santa Maria, vemos que a maioria fica entre bom e regular. PorÈm, olhando para o percentual de respostas Ruim ou PÈssimo, a acessibilidade arquitetÙnica tem 20.3% e a atitudinal È de 11.9%. Isso indica que os servidores possam estar mais insatisfeito com questıes relacionadas a rampas, elevadores e banheiros adaptados e etc, do que com questıes de incentivo a percepÁıes sem preconceitos, discriminaÁıes, estigmas e etc.  
+  
+```{r, echo=FALSE,warning=FALSE,warning=FALSE,fig.height=7, fig.width=10}
+# apenas Santa Maria
+texto_size <- 2.5 #  tamanho do texto para as frequÍncias
+titulo_size <- 10 # tamanho do tÌtulo dos gr·ficos
 
-```{r, echo=FALSE,warning=FALSE,warning=FALSE,fig.height=6, fig.width=10}
-texto_size <- 2.5 #  tamanho do texto para as frequ√™ncias
-titulo_size <- 10 # tamanho do t√≠tulo dos gr√°ficos
-
-ggplot(base1, aes(x = como_considera_acessibilidade_arquitetonica_ufsm, fill = campus)) +
-  geom_bar(position = "dodge") +
-  labs(x = "Acessibilidade Arquitet√¥nica na UFSM", y = "Frequ√™ncia absoluta", fill = "Campus") +
-  ggtitle("Avalia√ß√£o da Acessibilidade Arquitet√¥nica por Campus") +
-  #scale_fill_manual(values = c("Feminino" = "#445a14", "Masculino" = "#778c43")) +
-  theme_minimal() +
-  theme(plot.title = element_text(size = titulo_size))
-
-```
-
-
-
-```{r, include=FALSE}
-# instrumental/digital
-table(base1$genero,base1$como_considera_acessibilidade_instrumental_digital_ufsm)
-prop.table(table(base1$genero,base1$como_considera_acessibilidade_instrumental_digital_ufsm))*100
-
-base_feminino <- base1[base1$genero == "Feminino", ]
-base_feminino$como_considera_acessibilidade_instrumental_digital_ufsm <- factor(base_feminino$como_considera_acessibilidade_instrumental_digital_ufsm, levels = names(sort(table(base_feminino$como_considera_acessibilidade_instrumental_digital_ufsm), decreasing = TRUE)))
-
-base_masculino <- base1[base1$genero == "Masculino", ]
-base_masculino$como_considera_acessibilidade_instrumental_digital_ufsm <- factor(base_masculino$como_considera_acessibilidade_instrumental_digital_ufsm, levels = names(sort(table(base_masculino$como_considera_acessibilidade_instrumental_digital_ufsm), decreasing = TRUE)))
-
-# Pra aparecer no grafico na ordem
-ordem <- c("√ìtimo", "Bom", "Regular", "Ruim", "P√©ssimo")
-
-base_feminino$como_considera_acessibilidade_instrumental_digital_ufsm <- factor(base_feminino$como_considera_acessibilidade_instrumental_digital_ufsm, levels = ordem)
-base_masculino$como_considera_acessibilidade_instrumental_digital_ufsm <- factor(base_masculino$como_considera_acessibilidade_instrumental_digital_ufsm, levels = ordem)
-base1$como_considera_acessibilidade_instrumental_digital_ufsm <- factor(base1$como_considera_acessibilidade_instrumental_digital_ufsm, levels = ordem)
-
-print(sprintf('Percentual de respostas bom ou regular para os homens √© de %.1f %% e para mulheres √© de %.1f %%', 
-               sum(base_masculino$como_considera_acessibilidade_instrumental_digital_ufsm %in% c("Bom", "√ìtimo")) / nrow(base_masculino) * 100, 
-               sum(base_feminino$como_considera_acessibilidade_instrumental_digital_ufsm %in% c("Bom", "√ìtimo")) / nrow(base_feminino) * 100))
-```
-
-Em rela√ß√£o acessibilidade instrumental/digital da UFSM (Ex: software de leitor de tela no computador, sites e aplicativos institucionais acess√≠veis e ferramentas que eliminem barreiras digitais e de instrumentos de trabalho), os homens tamb√©m parecem estar mais satisfeitos do que as mulheres, em geral. Cerca de 37,5% das mulheres responderam bom ou √≥timo e, para os homens, este percentual fica em 50%.  
-
-```{r, echo=FALSE,warning=FALSE,warning=FALSE,fig.height=6, fig.width=10}
-texto_size <- 2.5 #  tamanho do texto para as frequ√™ncias
-titulo_size <- 10 # tamanho do t√≠tulo dos gr√°ficos
-
-grafico <- ggplot(base1, aes(x = como_considera_acessibilidade_instrumental_digital_ufsm, fill = genero)) +
-  geom_bar(position = "dodge") +
-  labs(x = "Acessibilidade Instrumental/Digital na UFSM", y = "Frequ√™ncia absoluta", fill = "G√™nero") +
-  ggtitle("Avalia√ß√£o da Acessibilidade Instrumental/Digital por G√™nero") +
-  scale_fill_manual(values = c("Feminino" = "#445a14", "Masculino" = "#778c43")) +
-  theme_minimal() +
-  theme(plot.title = element_text(size = titulo_size))
-
-grafico2 <- ggplot(base_feminino, aes(x = como_considera_acessibilidade_instrumental_digital_ufsm)) +
-  geom_bar(fill = "#445a14", position = "dodge") +
+grafico <- ggplot(base_santa, aes(x = factor(como_considera_acessibilidade_arquitetonica_ufsm, levels=ordem))) +
+  geom_bar(position = "dodge", fill = "#778c43") +
   geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
-  labs(x = NULL, y = NULL) +
-  ggtitle("G√™nero Feminino") +
+  labs(x = "Acessibilidade ArquitetÙnica na UFSM", y = "FrequÍncia absoluta") +
+  ggtitle("AvaliaÁ„o da Acessibilidade ArquitetÙnica - Santa Maria") +
   theme_minimal() +
-  theme(axis.title = element_blank(), 
-        axis.text.y = element_blank(),
-        plot.title = element_text(hjust = 0.5, size = titulo_size))
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5), 
+        axis.title.y = element_blank(),  
+        axis.text.y = element_blank(),  
+        axis.ticks.y = element_blank(),axis.title.x = element_text(size = 9)) 
 
-grafico3 <- ggplot(base_masculino, aes(x = como_considera_acessibilidade_instrumental_digital_ufsm)) +
-  geom_bar(fill = "#778c43", position = "dodge") +
+grafico2 <- ggplot(base_santa, aes(x = factor(como_considera_acessibilidade_atitudinal_ufsm,levels=ordem))) +
+  geom_bar(position = "dodge", fill = "#778c43") +
   geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
-  labs(x = NULL, y = NULL) +
-  ggtitle("G√™nero Masculino") +
+  labs(x = "Acessibilidade Atitudinal na UFSM", y = "FrequÍncia absoluta") +
+  ggtitle("AvaliaÁ„o da Acessibilidade Atitudinal - Santa Maria") +
   theme_minimal() +
-  theme(axis.title = element_blank(), 
-        axis.text.y = element_blank(),
-        plot.title = element_text(hjust = 0.5, size = titulo_size))
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5), 
+        axis.title.y = element_blank(),  
+        axis.text.y = element_blank(),  
+        axis.ticks.y = element_blank(),axis.title.x = element_text(size = 9)) 
 
-grid.arrange(arrangeGrob(grafico2, grafico3, ncol = 1),
-             grafico,
-             layout_matrix = matrix(c(1, 2), ncol = 2, byrow = FALSE),
-             widths = c(1, 2))
+grafico3 <- ggplot(base_santa, aes(x = factor(como_considera_acessibilidade_comunicacional_ufsm,levels=ordem))) +
+  geom_bar(position = "dodge", fill = "#778c43") +
+  geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
+  labs(x = "Acessibilidade Comunicacional na UFSM", y = "FrequÍncia absoluta") +
+  ggtitle("AvaliaÁ„o da Acessibilidade Comunicacional - Santa Maria") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5), 
+        axis.title.y = element_blank(),  
+        axis.text.y = element_blank(),  
+        axis.ticks.y = element_blank(),axis.title.x = element_text(size = 9)) 
+
+
+grafico4 <- ggplot(base_santa, aes(x = factor(como_considera_acessibilidade_instrumental_digital_ufsm, levels = ordem))) +
+  geom_bar(position = "dodge", fill = "#778c43", stat = "count") +
+geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
+  labs(x = "Acessibilidade Instrumental/Digital na UFSM", y = "") +  # Remove o rÛtulo do eixo y
+  ggtitle("AvaliaÁ„o da Acessibilidade Instrumental/Digital - Santa Maria") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5), 
+        axis.title.y = element_blank(),  
+        axis.text.y = element_blank(),  
+        axis.ticks.y = element_blank(),axis.title.x = element_text(size = 9)) 
+
+grid.arrange(grafico, grafico2, grafico3, grafico4,
+             ncol = 2, nrow = 2,
+             heights  = c(1,1), 
+             top = "Respostas dos servidores de Santa Maria em relaÁ„o ao grau de satisfaÁ„o com a acessibilidade")
+
 ```
 
 
-
-
-```{r, include=FALSE}
-# instrumental/digital
-table(base1$genero,base1$como_considera_acessibilidade_atitudinal_ufsm)
-prop.table(table(base1$genero,base1$como_considera_acessibilidade_atitudinal_ufsm))*100
-
-base_feminino <- base1[base1$genero == "Feminino", ]
-base_feminino$como_considera_acessibilidade_atitudinal_ufsm <- factor(base_feminino$como_considera_acessibilidade_atitudinal_ufsm, levels = names(sort(table(base_feminino$como_considera_acessibilidade_atitudinal_ufsm), decreasing = TRUE)))
-
-base_masculino <- base1[base1$genero == "Masculino", ]
-base_masculino$como_considera_acessibilidade_atitudinal_ufsm <- factor(base_masculino$como_considera_acessibilidade_atitudinal_ufsm, levels = names(sort(table(base_masculino$como_considera_acessibilidade_atitudinal_ufsm), decreasing = TRUE)))
-
-# Pra aparecer no grafico na ordem
-ordem <- c("√ìtimo", "Bom", "Regular", "Ruim", "P√©ssimo")
-
-base_feminino$como_considera_acessibilidade_atitudinal_ufsm <- factor(base_feminino$como_considera_acessibilidade_atitudinal_ufsm, levels = ordem)
-base_masculino$como_considera_acessibilidade_atitudinal_ufsm <- factor(base_masculino$como_considera_acessibilidade_atitudinal_ufsm, levels = ordem)
-base1$como_considera_acessibilidade_atitudinal_ufsm <- factor(base1$como_considera_acessibilidade_atitudinal_ufsm, levels = ordem)
-
-print(sprintf('Percentual de respostas bom ou regular para os homens √© de %.1f %% e para mulheres √© de %.1f %%', 
-               sum(base_masculino$como_considera_acessibilidade_atitudinal_ufsm %in% c("Bom", "√ìtimo")) / nrow(base_masculino) * 100, 
-               sum(base_feminino$como_considera_acessibilidade_atitudinal_ufsm %in% c("Bom", "√ìtimo")) / nrow(base_feminino) * 100))
-```
-
-Em rela√ß√£o acessibilidade atitudinal da UFSM (incentivo a percep√ß√µes sem preconceitos, discrimina√ß√µes e estigmas), os homens novamnete se mostram mais satisfeitos do que as mulheres, em geral. Cerca de 43,8% das mulheres responderam bom ou √≥timo e, para os homens, este percentual fica em 59,4%.  
-
-```{r, echo=FALSE,warning=FALSE,warning=FALSE,fig.height=6, fig.width=10}
-texto_size <- 2.5 #  tamanho do texto para as frequ√™ncias
-titulo_size <- 10 # tamanho do t√≠tulo dos gr√°ficos
-
-grafico <- ggplot(base1, aes(x = como_considera_acessibilidade_atitudinal_ufsm, fill = genero)) +
-  geom_bar(position = "dodge") +
-  labs(x = "Acessibilidade Atitudinal na UFSM", y = "Frequ√™ncia absoluta", fill = "G√™nero") +
-  ggtitle("Avalia√ß√£o da Acessibilidade Atitudinal por G√™nero") +
-  scale_fill_manual(values = c("Feminino" = "#445a14", "Masculino" = "#778c43")) +
-  theme_minimal() +
-  theme(plot.title = element_text(size = titulo_size))
-
-grafico2 <- ggplot(base_feminino, aes(x = como_considera_acessibilidade_atitudinal_ufsm)) +
-  geom_bar(fill = "#445a14", position = "dodge") +
-  geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
-  labs(x = NULL, y = NULL) +
-  ggtitle("G√™nero Feminino") +
-  theme_minimal() +
-  theme(axis.title = element_blank(), 
-        axis.text.y = element_blank(),
-        plot.title = element_text(hjust = 0.5, size = titulo_size))
-
-grafico3 <- ggplot(base_masculino, aes(x = como_considera_acessibilidade_atitudinal_ufsm)) +
-  geom_bar(fill = "#778c43", position = "dodge") +
-  geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
-  labs(x = NULL, y = NULL) +
-  ggtitle("G√™nero Masculino") +
-  theme_minimal() +
-  theme(axis.title = element_blank(), 
-        axis.text.y = element_blank(),
-        plot.title = element_text(hjust = 0.5, size = titulo_size))
-
-grid.arrange(arrangeGrob(grafico2, grafico3, ncol = 1),
-             grafico,
-             layout_matrix = matrix(c(1, 2), ncol = 2, byrow = FALSE),
-             widths = c(1, 2))
-```
-
-
-
-```{r, include=FALSE}
-# comunicacional
-table(base1$genero,base1$como_considera_acessibilidade_comunicacional_ufsm)
-prop.table(table(base1$genero,base1$como_considera_acessibilidade_comunicacional_ufsm))*100
-
-base_feminino <- base1[base1$genero == "Feminino", ]
-base_feminino$como_considera_acessibilidade_comunicacional_ufsm <- factor(base_feminino$como_considera_acessibilidade_comunicacional_ufsm, levels = names(sort(table(base_feminino$como_considera_acessibilidade_comunicacional_ufsm), decreasing = TRUE)))
-
-base_masculino <- base1[base1$genero == "Masculino", ]
-base_masculino$como_considera_acessibilidade_comunicacional_ufsm <- factor(base_masculino$como_considera_acessibilidade_comunicacional_ufsm, levels = names(sort(table(base_masculino$como_considera_acessibilidade_comunicacional_ufsm), decreasing = TRUE)))
-
-# Pra aparecer no grafico na ordem
-ordem <- c("√ìtimo", "Bom", "Regular", "Ruim", "P√©ssimo")
-
-base_feminino$como_considera_acessibilidade_comunicacional_ufsm <- factor(base_feminino$como_considera_acessibilidade_comunicacional_ufsm, levels = ordem)
-base_masculino$como_considera_acessibilidade_comunicacional_ufsm <- factor(base_masculino$como_considera_acessibilidade_comunicacional_ufsm, levels = ordem)
-base1$como_considera_acessibilidade_comunicacional_ufsm <- factor(base1$como_considera_acessibilidade_comunicacional_ufsm, levels = ordem)
-
-print(sprintf('Percentual de respostas bom ou regular para os homens √© de %.1f %% e para mulheres √© de %.1f %%',
-               sum(base_masculino$como_considera_acessibilidade_comunicacional_ufsm %in% c("Bom", "√ìtimo")) / nrow(base_masculino) * 100, 
-               sum(base_feminino$como_considera_acessibilidade_comunicacional_ufsm %in% c("Bom", "√ìtimo")) / nrow(base_feminino) * 100))
-```
-
-Em rela√ß√£o acessibilidade comunicacional da UFSM (oferecimento de recursos e atividades que promovam a independ√™ncia no acesso a qualquer conte√∫do. Isso inclui legendas, √°udios, descri√ß√µes, Libras, braile, etc), os homens novamnete se mostram mais satisfeitos do que as mulheres, em geral. Cerca de 28,1% das mulheres responderam bom ou √≥timo e, para os homens, este percentual fica em 56,2%.  
-
-```{r, echo=FALSE,warning=FALSE,warning=FALSE,fig.height=6, fig.width=10}
-texto_size <- 2.5 #  tamanho do texto para as frequ√™ncias
-titulo_size <- 10 # tamanho do t√≠tulo dos gr√°ficos
-
-grafico <- ggplot(base1, aes(x = como_considera_acessibilidade_comunicacional_ufsm, fill = genero)) +
-  geom_bar(position = "dodge") +
-  labs(x = "Acessibilidade Comunicacional na UFSM", y = "Frequ√™ncia absoluta", fill = "G√™nero") +
-  ggtitle("Avalia√ß√£o da Acessibilidade Comunicacional por G√™nero") +
-  scale_fill_manual(values = c("Feminino" = "#445a14", "Masculino" = "#778c43")) +
-  theme_minimal() +
-  theme(plot.title = element_text(size = titulo_size))
-
-grafico2 <- ggplot(base_feminino, aes(x = como_considera_acessibilidade_comunicacional_ufsm)) +
-  geom_bar(fill = "#445a14", position = "dodge") +
-  geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
-  labs(x = NULL, y = NULL) +
-  ggtitle("G√™nero Feminino") +
-  theme_minimal() +
-  theme(axis.title = element_blank(), 
-        axis.text.y = element_blank(),
-        plot.title = element_text(hjust = 0.5, size = titulo_size))
-
-grafico3 <- ggplot(base_masculino, aes(x = como_considera_acessibilidade_comunicacional_ufsm)) +
-  geom_bar(fill = "#778c43", position = "dodge") +
-  geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
-  labs(x = NULL, y = NULL) +
-  ggtitle("G√™nero Masculino") +
-  theme_minimal() +
-  theme(axis.title = element_blank(), 
-        axis.text.y = element_blank(),
-        plot.title = element_text(hjust = 0.5, size = titulo_size))
-
-grid.arrange(arrangeGrob(grafico2, grafico3, ncol = 1),
-             grafico,
-             layout_matrix = matrix(c(1, 2), ncol = 2, byrow = FALSE),
-             widths = c(1, 2))
-```
-
-Abaixo a tabela mostra a vis√£o geral de como cada g√™nero enxerga as quest√µes de acessibilidade. Para as mulheres ..........
+Como os demais campus tem poucos servidores participantes da pesquisa o resumo de suas respostas em relaÁ„o a satisfaÁ„o da acessibilidade estar„o na tabela abaixo, juntamente com o resumo do campus Santa Maria.
+Avaliando as respostas individualmente, 
 
 ```{r, echo=FALSE,warning=FALSE,warning=FALSE}
-questoes <- c("como_considera_acessibilidade_comunicacional_ufsm",
-              "como_considera_acessibilidade_atitudinal_ufsm",
-              "como_considera_acessibilidade_instrumental_digital_ufsm",
-              "como_considera_acessibilidade_arquitetonica_ufsm")
-niveis <- c("otimo", "bom", "regular", "ruim", "pessimo")
 
-acessibilidade_geral_fem <- bind_rows(lapply(questoes, function(questao) {
-  prop_table <- table(base1[base1$genero == "Feminino", ][[questao]])
-  prop.table(prop_table) * 100
-}), .id = "Quest√£o")
+df <- data.frame(a = unlist(c(base1$como_considera_acessibilidade_arquitetonica_ufsm,base1$como_considera_acessibilidade_atitudinal_ufsm,base1$como_considera_acessibilidade_instrumental_digital_ufsm,base1$como_considera_acessibilidade_comunicacional_ufsm)),b=unlist(c(base1$campus,base1$campus,base1$campus,base1$campus)))
 
-acessibilidade_geral_fem$Quest√£o <- c('Comunicacional','Atitudinal','Instrumental/Digital','Arquitet√¥nica')
-acessibilidade_geral_fem <- acessibilidade_geral_fem %>%  rename('√ìtimo (%)' = √ìtimo, 'Bom (%)' = Bom, 'Regular (%)' = Regular, 'Ruim (%)' = Ruim,'P√©ssimo (%)' = P√©ssimo)
+df = apply_labels(df, a =  "Respostas",
+                     b = "Campus")
+satis<-crosstable(df, b, by = a, total="both")%>%
+  as_flextable(by_header="Acessibilidade Geral")
 
-acessibilidade_geral_masc <- bind_rows(lapply(questoes, function(questao) {
-  prop_table <- table(base1[base1$genero == "Masculino", ][[questao]])
-  prop.table(prop_table) * 100
-}), .id = "Quest√£o")
+satis
 
-acessibilidade_geral_masc$Quest√£o <- c('Comunicacional','Atitudinal','Instrumental/Digital','Arquitet√¥nica')
-acessibilidade_geral_masc <- acessibilidade_geral_masc %>%  rename('√ìtimo (%)' = √ìtimo, 'Bom (%)' = Bom, 'Regular (%)' = Regular, 'Ruim (%)' = Ruim,'P√©ssimo (%)' = P√©ssimo)
-
-knitr::kable(acessibilidade_geral_masc)
-knitr::kable(acessibilidade_geral_fem)
 ```
+
