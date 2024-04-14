@@ -1,0 +1,1286 @@
+---
+title: "Relatório Assessoria 1"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    collapsad: false
+    smooth_scroll: true
+    theme: journal
+    highlight: tango
+date: "2024-04-07"
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+```{r, include=FALSE}
+pacman::p_load(gridExtra,dplyr,knitr,rmarkdown,ggplot2, kableExtra, stringi,xlsx,readxl,crosstable,flextable,tidyverse)
+
+base <- read_xlsx("Respostas.xlsx")
+base <- base[, -ncol(base)]
+name_columns <- c(
+  "genero",
+  "genero_outro",
+  "idade",
+  "estado_civil",
+  "outro_estado_civil",
+  "filhos",
+  "qtd_filhos",
+  "idade_filhos",
+  "mora_com",
+  "outro_mora_com",
+  "escolaridade",
+  "curso_formacao",
+  "categoria",
+  "cargo",
+  "cargo_nivel1",
+  "cargo_nivel2",
+  "carga_horaria_semanal",
+  "outro_carga_horaria_semanal",
+  "unidade_lotacao",
+  "cd_ou_fg",
+  "campus",
+  "ano_ingresso",
+  "ingresso_cotas_pcd",
+  "sentimento_local_trabalho",
+  "deficiencia",
+  "deficiencia_outro",
+  "periodo_diagnostico",
+  "causa_deficiencia",
+  "uso_tecnologia_assistiva_recurso",
+  "qual_tecnologia",
+  "tecnologia_disponibilizada_ufsm",
+  "como_consegue_obter_tecnologia",
+  "necessita_acompanhamento/apoio_atividades_cotidianas_notrabalho",
+  "se_sim_quais_atividades?",
+  "acompanhamento/apoio_disponibilizado_ufsm",
+  "se_nao_como_consegue_obter",
+  "como_considera_acessibilidade_arquitetonica_ufsm",
+  "como_considera_acessibilidade_atitudinal_ufsm",
+  "como_considera_acessibilidade_instrumental_digital_ufsm",
+  "como_considera_acessibilidade_comunicacional_ufsm",
+  "conhece_legislacao_br_sobre_acessibilidade",
+  "objetivo_quando_fez_concurso_ufsm",
+  "outro_objetivo_quando_fez_concurso_ufsm",
+  "dificuldade_adaptacao_durante_ingresso_atividades_laborais_ufsm",
+  "dificuldade_adaptacao_se_sim_como_foi_resolvido",
+  "enfrentou_problema_relacionamento_chefia_eou_colegas",
+  "problema_relacionamento_se_sim_como_foi_resolvido",
+  "ja_foi_parte_reclamante_processo_administrativo_disciplinar_sindicancia_eou_reclamatoria_trabalhista_naufsm",
+  "considera_ufsm_dispoe_recursos_humanos_materiais_suficientes_atender_necessidades_que_eventualmente_surjam_em_relacao_acessibilidade",
+  "se_nao_relate_oq_considera_insuficiente",
+  "voce_participa_associacao/sindicato/outros_grupos_luta_direitos_trabalhistas",
+  "se_sim_qual_associacao/sindicato",
+  "se_participa_sente_pautas_pcd_consideradas_em_acoes_da_associacao/sindicato",
+  "espaco_comentarios")
+
+# curso formacao tirei pq há 62 categorias distintas
+# cargo tirei pq não tem padrão na escrita (42 categorias distintas)
+# unidade_lotacao variável inútil para gente e 56 categorias distintas
+# ia tratar a variável mora_com e outro_mora_com mas são categorias demais e estão confusas
+# gênero_outro só tem nulo
+
+# Remoção colunas
+colnames(base) <- name_columns
+base1 <- base[, !colnames(base) %in% c("idade_filhos", "cargo_nivel1", "cargo_nivel2",
+                                       "se_nao_como_consegue_obter","curso_formacao","cargo",
+                                      "unidade_lotacao","mora_com","outro_mora_com","genero_outro")]
+```
+
+# Relatório Estatístico - Projeto de Pesquisa: Relações de Trabalho e os servidores com deficiência na Universidade Federal de Santa Maria (UFSM)
+
+## Introdução
+
+O presente relatório apresenta uma análise de dados descritiva e exploratória relativa aos dados obtidos via formulário referente ao projeto de pesquisa Relações de Trabalho e os servidores com deficiência na Universidade Federal de Santa Maria (UFSM).
+O objetivo geral é entender qual o significado do trabalho para os servidores com deficiência na Universidade Federal de Santa Maria (UFSM) e como o capacitismo interfere nas relações laborais desses servidores.
+Para concretizar o objetivo geral, o presente estudo almeja realizar os seguintes objetivos específicos:
+
+-   Mapear os servidores com deficiência na UFSM;
+-   Compreender como se dão suas relações de trabalho na organização e se essas são ou já foram permeadas pelo capacitismo;
+-   Entender qual o significado do trabalho para os servidores com deficiência na UFSM;
+-   Propor alternativas e indicadores para que a área de gestão de pessoas possa facilitar a inclusão de servidores com deficiência nas relações de trabalho.
+
+## Materiais e métodos
+
+São 54 variáveis, referentes às 54 perguntas contidas no formulário preenchido pelos servidores (a última pergunta referente ao e-mail foi removida da tabela):
+
+-   Gênero
+
+-   Qual?
+
+-   Idade:
+
+-   Estado civil:
+
+-   Qual?
+
+-   Tem filhos(as)?
+
+-   Quantos:
+
+-   Idade(s):
+
+-   Mora com (mais de uma opção pode ser marcada):
+
+-   Qual?
+
+-   Escolaridade:
+
+-   Qual(is) curso(s)/área(s) de conhecimento da(s) sua(s) formação(ões)?
+
+-   Categoria:
+
+-   Cargo:
+
+-   Nível:
+
+-   Nível:
+
+-   Carga horária semanal:
+
+-   Qual?
+
+-   Unidade de lotação:
+
+-   Possui Cargo de Direção (CD) ou Função Gratificada (FG)?
+
+-   Campus:
+
+-   Ano de ingresso como servidor na Universidade:
+
+-   Ingressou por intermédio do sistema de cotas para PCD?
+
+-   Você se sente satisfeito/realizado/reconhecido/útil no seu local de trabalho?
+
+-   Tipo de deficiência que possui:
+
+-   Qual(is)?
+
+-   Possui o diagnóstico desde:
+
+-   Causa:
+
+-   Você utiliza alguma tecnologia assistiva/recurso?
+
+-   Qual(is)?
+
+-   Se utiliza alguma tecnologia assistiva/recurso, essa é disponibilizada pela UFSM?
+
+-   Se não, como você consegue obter (através de recursos próprios, doações, etc)?
+
+-   Você necessita de algum acompanhamento ou apoio de outra pessoa para realizar as atividades cotidianas no ambiente de trabalho?
+
+-   Se necessita, em quais atividades?
+
+-   Esse acompanhamento/apoio é disponibilizado pela UFSM?
+
+-   Se não, como você consegue obter?
+
+-   De um modo geral, como você considera o nível de acessibilidade arquitetônica da UFSM (Exemplos: rampas, elevadores e banheiros adaptados, calçadas com piso tátil, vagas reservadas em estacionamentos, etc)?
+
+-   De um modo geral, como você considera o nível de acessibilidade atitudinal da UFSM (incentivo a percepções sem preconceitos, discriminações e estigmas)?
+
+-   De um modo geral, como você considera o nível de acessibilidade instrumental/digital da UFSM (Ex: software de leitor de tela no computador, sites e aplicativos institucionais acessíveis e ferramentas que eliminem barreiras digitais e de instrumentos de trabalho)?
+
+-   De um modo geral, como você considera o nível de acessibilidade comunicacional da UFSM (oferecimento de recursos e atividades que promovam a independência no acesso a qualquer conteúdo. Isso inclui legendas, áudios, descrições, Libras, braile, etc)?
+
+-   Você conhece a legislação brasileira sobre acessibilidade?
+
+-   Qual seu objetivo quando fez o concurso para a UFSM (mais de uma opção pode ser marcada)?
+
+-   Qual(is)?
+
+-   Você sentiu dificuldade de adaptação durante o ingresso nas atividades laborais na UFSM?
+
+-   Se sim, poderia relatar?
+    Como foi resolvido?
+
+-   Você enfrentou algum problema de relacionamento interpessoal com chefias e/ou colegas?
+
+-   Se sim, poderia relatar?
+    Como foi resolvido?
+
+-   Você já foi parte reclamante, na UFSM, em algum Processo administrativo disciplinar (PAD), Sindicância e/ou reclamatória trabalhista?
+
+-   Você considera que a UFSM dispõe de recursos humanos e materiais suficientes para atender necessidades que possam eventualmente surgir relacionadas a acessibilidade?
+
+-   Se não, poderia relatar o que considera insuficiente?
+
+-   Você participa de alguma associação, sindicato, ou outros grupos de luta por defesa de direitos trabalhistas?
+
+-   Qual?
+
+-   Se participa, você sente que as pautas das PCD são consideradas nas ações dessa associação/sindicato/grupo?
+
+-   Espaço para outros comentários e informações que você queira nos passar sobre inclusão e acessibilidade na UFSM:
+
+```{r, include=FALSE}
+# Tratamento carga horaria semanal
+base1 <- mutate(base1, carga_horaria_semanal = ifelse(carga_horaria_semanal == 'Outra', outro_carga_horaria_semanal, carga_horaria_semanal))
+base1$carga_horaria_semanal <- gsub("\\D", "", base1$carga_horaria_semanal)
+base1 <- base1[, !colnames(base1) %in% c("outro_carga_horaria_semanal")]
+
+# Tratamento estado civil
+base1 <- mutate(base1, estado_civil = ifelse(estado_civil == 'Outro', 'Divorciado(a)', estado_civil))
+base1 <- base1[, !colnames(base1) %in% c("outro_estado_civil")]
+
+# Tratamento qtd filhos
+base1 <- mutate(base1, qtd_filhos = ifelse(is.na(qtd_filhos), "0", qtd_filhos))
+
+# tratamento tipo das variaveis
+base1$genero <- as.factor(base1$genero)
+
+# tratamneto idade e ano_engresso
+base1$idade <- as.integer(base1$idade)
+base1$ano_ingresso <- as.integer(base1$ano_ingresso)
+
+# Para os graficos ficarem nesta ordem
+ordem <- c("Ótimo", "Bom", "Regular", "Ruim", "Péssimo")
+
+# Criação variavel numérica pras questões de acessibilidade
+base1 <- base1 %>%
+  mutate(
+    arquitetonica_num = recode(como_considera_acessibilidade_arquitetonica_ufsm, 
+                               "Péssimo" = 1, "Ruim" = 2, "Regular" = 3, "Bom" = 4, "Ótimo" = 5),
+    atitudinal_num = recode(como_considera_acessibilidade_atitudinal_ufsm, 
+                            "Péssimo" = 1, "Ruim" = 2, "Regular" = 3, "Bom" = 4, "Ótimo" = 5),
+    instrumental_digital_num = recode(como_considera_acessibilidade_instrumental_digital_ufsm, 
+                                      "Péssimo" = 1, "Ruim" = 2, "Regular" = 3, "Bom" = 4, "Ótimo" = 5),
+    comunicacional_num = recode(como_considera_acessibilidade_comunicacional_ufsm, 
+                                "Péssimo" = 1, "Ruim" = 2, "Regular" = 3, "Bom" = 4, "Ótimo" = 5)
+  )
+```
+
+## Análise Descritiva
+
+Nesta seção iremos desenvolver as seguintes análises:
+
+-   Gênero X grau de satisfação (em todas as questões de acessibilidade)
+
+-   Campi x grau de satisfação (em todas as questões de acessibilidade)
+
+-   Idade X grau de satisfação (em todas as questões de acessibilidade)
+
+-   Tipos de deficiência mais comum X grau de satisfação (em todas as questões de acessibilidade)
+
+-   Data de ingresso X entrada por cotas
+
+-   Idade X conhecimento da legislação
+
+-   Objetivo de fazer o concurso X grau de satisfação.
+
+-   Satisfação X tempo de serviço
+
+-   Satisfação X escolaridade
+
+-   Satisfação X setores
+
+### Gênero x Grau de satisfação para questões de acessibilidade
+
+Na nossa base de dados temos o mesmo número de pessoas no sexo feminino e masculino, ambos com 32 pessoas.
+Abaixo temos o gráfico de barras que mostra a quantidade de respostas em cada nível para cada gênero para questões de opinião em relação à acessibilidade.
+
+```{r, include=FALSE}
+# Genero x grau de satisfacao
+# acessibilidade arquitetonica
+table(base1$genero)
+table(base1$genero,base1$como_considera_acessibilidade_arquitetonica_ufsm)
+
+base_feminino <- base1[base1$genero == "Feminino", ]
+base_masculino <- base1[base1$genero == "Masculino", ]
+
+print(sprintf('Percentual de respostas bom ou regular para os homens é de %.1f %% e para mulheres é de %.1f %%', 
+               sum(base_masculino$como_considera_acessibilidade_arquitetonica_ufsm %in% c("Bom", "Ótimo")) / nrow(base_masculino) * 100, 
+               sum(base_feminino$como_considera_acessibilidade_arquitetonica_ufsm %in% c("Bom", "Ótimo")) / nrow(base_feminino) * 100))
+```
+
+Em relação acessibilidade arquitetônica da UFSM (Exemplos: rampas, elevadores e banheiros adaptados, calçadas com piso tátil, vagas reservadas em estacionamentos, etc), os homens parecem estar mais satisfeitos do que as mulheres, em geral.
+Cerca de 37,5% das mulheres responderam bom ou ótimo e, para os homens, este percentual fica em 46,9%.
+
+```{r, echo=FALSE,warning=FALSE,warning=FALSE,fig.height=6, fig.width=10}
+texto_size <- 2.5 #  tamanho do texto para as frequências
+titulo_size <- 10 # tamanho do título dos gráficos
+
+grafico <- ggplot(base1, aes(x = factor(como_considera_acessibilidade_arquitetonica_ufsm,levels=ordem), fill = genero)) +
+  geom_bar(position = "dodge") +
+  labs(x = "Acessibilidade Arquitetônica na UFSM", y = "Frequência absoluta", fill = "Gênero") +
+  ggtitle("Avaliação da Acessibilidade Arquitetônica por Gênero") +
+  scale_fill_manual(values = c("Feminino" = "#445a14", "Masculino" = "#A9B388")) +
+  theme_minimal() +
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5))
+
+grafico2 <- ggplot(base_feminino, aes(x = factor(como_considera_acessibilidade_comunicacional_ufsm, levels = ordem))) +
+  geom_bar(fill = "#445a14") +
+  geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
+  labs(x = NULL, y = NULL) +
+  ggtitle("Gênero Feminino") +
+  theme_minimal() +
+  theme(axis.title = element_blank(),
+        axis.text.y = element_blank(),
+        plot.title = element_text(hjust = 0.5, size = titulo_size))
+
+grafico3 <- ggplot(base_masculino,  aes(x = factor(como_considera_acessibilidade_comunicacional_ufsm, levels = ordem))) +
+  geom_bar(fill = "#A9B388", position = "dodge") +
+  geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
+  labs(x = NULL, y = NULL) +
+  ggtitle("Gênero Masculino") +
+  theme_minimal() +
+  theme(axis.title = element_blank(), 
+        axis.text.y = element_blank(),
+        plot.title = element_text(hjust = 0.5, size = titulo_size))
+
+grid.arrange(arrangeGrob(grafico2, grafico3, ncol = 1),
+             grafico,
+             layout_matrix = matrix(c(1, 2), ncol = 2, byrow = FALSE),
+             widths = c(1, 2))
+```
+
+```{r, include=FALSE}
+# instrumental/digital
+table(base1$genero,base1$como_considera_acessibilidade_instrumental_digital_ufsm)
+prop.table(table(base1$genero,base1$como_considera_acessibilidade_instrumental_digital_ufsm))*100
+
+base_feminino <- base1[base1$genero == "Feminino", ]
+base_masculino <- base1[base1$genero == "Masculino", ]
+
+print(sprintf('Percentual de respostas bom ou regular para os homens é de %.1f %% e para mulheres é de %.1f %%', 
+               sum(base_masculino$como_considera_acessibilidade_instrumental_digital_ufsm %in% c("Bom", "Ótimo")) / nrow(base_masculino) * 100, 
+               sum(base_feminino$como_considera_acessibilidade_instrumental_digital_ufsm %in% c("Bom", "Ótimo")) / nrow(base_feminino) * 100))
+```
+
+Em relação acessibilidade instrumental/digital da UFSM (Ex: software de leitor de tela no computador, sites e aplicativos institucionais acessíveis e ferramentas que eliminem barreiras digitais e de instrumentos de trabalho), os homens também parecem estar mais satisfeitos do que as mulheres, em geral.
+Cerca de 37,5% das mulheres responderam bom ou ótimo e, para os homens, este percentual fica em 50%.
+
+```{r, echo=FALSE,warning=FALSE,warning=FALSE,fig.height=6, fig.width=10}
+texto_size <- 2.5 #  tamanho do texto para as frequências
+titulo_size <- 10 # tamanho do título dos gráficos
+
+grafico <- ggplot(base1, aes(x = factor( como_considera_acessibilidade_instrumental_digital_ufsm,levels=ordem), fill = genero)) +
+  geom_bar(position = "dodge") +
+  labs(x = "Acessibilidade Instrumental/Digital na UFSM", y = "Frequência absoluta", fill = "Gênero") +
+  ggtitle("Avaliação da Acessibilidade Instrumental/Digital por Gênero") +
+  scale_fill_manual(values = c("Feminino" = "#445a14", "Masculino" = "#A9B388")) +
+  theme_minimal() +
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5))
+
+grafico2 <- ggplot(base_feminino, aes(x = factor(como_considera_acessibilidade_instrumental_digital_ufsm,levels=ordem))) +
+  geom_bar(fill = "#445a14", position = "dodge") +
+  geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
+  labs(x = NULL, y = NULL) +
+  ggtitle("Gênero Feminino") +
+  theme_minimal() +
+  theme(axis.title = element_blank(), 
+        axis.text.y = element_blank(),
+        plot.title = element_text(hjust = 0.5, size = titulo_size))
+
+grafico3 <- ggplot(base_masculino, aes(x = factor(como_considera_acessibilidade_instrumental_digital_ufsm,levels=ordem))) +
+  geom_bar(fill = "#A9B388", position = "dodge") +
+  geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
+  labs(x = NULL, y = NULL) +
+  ggtitle("Gênero Masculino") +
+  theme_minimal() +
+  theme(axis.title = element_blank(), 
+        axis.text.y = element_blank(),
+        plot.title = element_text(hjust = 0.5, size = titulo_size))
+
+grid.arrange(arrangeGrob(grafico2, grafico3, ncol = 1),
+             grafico,
+             layout_matrix = matrix(c(1, 2), ncol = 2, byrow = FALSE),
+             widths = c(1, 2))
+```
+
+```{r, include=FALSE}
+# instrumental/digital
+table(base1$genero,base1$como_considera_acessibilidade_atitudinal_ufsm)
+prop.table(table(base1$genero,base1$como_considera_acessibilidade_atitudinal_ufsm))*100
+
+base_feminino <- base1[base1$genero == "Feminino", ]
+base_masculino <- base1[base1$genero == "Masculino", ]
+
+print(sprintf('Percentual de respostas bom ou regular para os homens é de %.1f %% e para mulheres é de %.1f %%', 
+               sum(base_masculino$como_considera_acessibilidade_atitudinal_ufsm %in% c("Bom", "Ótimo")) / nrow(base_masculino) * 100, 
+               sum(base_feminino$como_considera_acessibilidade_atitudinal_ufsm %in% c("Bom", "Ótimo")) / nrow(base_feminino) * 100))
+```
+
+Em relação acessibilidade atitudinal da UFSM (incentivo a percepções sem preconceitos, discriminações e estigmas), os homens novamnete se mostram mais satisfeitos do que as mulheres, em geral.
+Cerca de 43,8% das mulheres responderam bom ou ótimo e, para os homens, este percentual fica em 59,4%.
+
+```{r, echo=FALSE,warning=FALSE,warning=FALSE,fig.height=6, fig.width=10}
+texto_size <- 2.5 #  tamanho do texto para as frequências
+titulo_size <- 10 # tamanho do título dos gráficos
+
+grafico <- ggplot(base1, aes(x = factor(como_considera_acessibilidade_atitudinal_ufsm, levels=ordem),fill = genero)) +
+  geom_bar(position = "dodge") +
+  labs(x = "Acessibilidade Atitudinal na UFSM", y = "Frequência absoluta", fill = "Gênero") +
+  ggtitle("Avaliação da Acessibilidade Atitudinal por Gênero") +
+  scale_fill_manual(values = c("Feminino" = "#445a14", "Masculino" = "#A9B388")) +
+  theme_minimal() +
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5))
+
+grafico2 <- ggplot(base_feminino, aes(x = factor(como_considera_acessibilidade_atitudinal_ufsm,levels=ordem))) +
+  geom_bar(fill = "#445a14", position = "dodge") +
+  geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
+  labs(x = NULL, y = NULL) +
+  ggtitle("Gênero Feminino") +
+  theme_minimal() +
+  theme(axis.title = element_blank(), 
+        axis.text.y = element_blank(),
+        plot.title = element_text(hjust = 0.5, size = titulo_size))
+
+grafico3 <- ggplot(base_masculino, aes(x = factor(como_considera_acessibilidade_atitudinal_ufsm,levels=ordem))) +
+  geom_bar(fill = "#A9B388", position = "dodge") +
+  geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
+  labs(x = NULL, y = NULL) +
+  ggtitle("Gênero Masculino") +
+  theme_minimal() +
+  theme(axis.title = element_blank(), 
+        axis.text.y = element_blank(),
+        plot.title = element_text(hjust = 0.5, size = titulo_size))
+
+grid.arrange(arrangeGrob(grafico2, grafico3, ncol = 1),
+             grafico,
+             layout_matrix = matrix(c(1, 2), ncol = 2, byrow = FALSE),
+             widths = c(1, 2))
+```
+
+```{r, include=FALSE}
+# comunicacional
+table(base1$genero,base1$como_considera_acessibilidade_comunicacional_ufsm)
+prop.table(table(base1$genero,base1$como_considera_acessibilidade_comunicacional_ufsm))*100
+
+base_feminino <- base1[base1$genero == "Feminino", ]
+base_masculino <- base1[base1$genero == "Masculino", ]
+
+print(sprintf('Percentual de respostas bom ou regular para os homens é de %.1f %% e para mulheres é de %.1f %%',
+               sum(base_masculino$como_considera_acessibilidade_comunicacional_ufsm %in% c("Bom", "Ótimo")) / nrow(base_masculino) * 100, 
+               sum(base_feminino$como_considera_acessibilidade_comunicacional_ufsm %in% c("Bom", "Ótimo")) / nrow(base_feminino) * 100))
+```
+
+Em relação acessibilidade comunicacional da UFSM (oferecimento de recursos e atividades que promovam a independência no acesso a qualquer conteúdo. Isso inclui legendas, áudios, descrições, Libras, braile, etc), os homens novamnete se mostram mais satisfeitos do que as mulheres, em geral.
+Cerca de 28,1% das mulheres responderam bom ou ótimo e, para os homens, este percentual fica em 56,2%.
+
+```{r, echo=FALSE,warning=FALSE,warning=FALSE,fig.height=6, fig.width=10}
+texto_size <- 2.5 #  tamanho do texto para as frequências
+titulo_size <- 10 # tamanho do título dos gráficos
+
+grafico <- ggplot(base1, aes(x = factor(como_considera_acessibilidade_comunicacional_ufsm,levels = ordem), fill = genero)) +
+  geom_bar(position = "dodge") +
+  labs(x = "Acessibilidade Comunicacional na UFSM", y = "Frequência absoluta", fill = "Gênero") +
+  ggtitle("Avaliação da Acessibilidade Comunicacional por Gênero") +
+  scale_fill_manual(values = c("Feminino" = "#445a14", "Masculino" = "#A9B388")) +
+  theme_minimal() +
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5))
+
+grafico2 <- ggplot(base_feminino, aes(x = factor(como_considera_acessibilidade_comunicacional_ufsm, levels = ordem))) +
+  geom_bar(fill = "#445a14", position = "dodge") +
+  geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
+  labs(x = NULL, y = NULL) +
+  ggtitle("Gênero Feminino") +
+  theme_minimal() +
+  theme(axis.title = element_blank(), 
+        axis.text.y = element_blank(),
+        plot.title = element_text(hjust = 0.5, size = titulo_size))
+
+grafico3 <- ggplot(base_masculino, aes(x = factor(como_considera_acessibilidade_comunicacional_ufsm, levels = ordem))) +
+  geom_bar(fill = "#A9B388", position = "dodge") +
+  geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
+  labs(x = NULL, y = NULL) +
+  ggtitle("Gênero Masculino") +
+  theme_minimal() +
+  theme(axis.title = element_blank(), 
+        axis.text.y = element_blank(),
+        plot.title = element_text(hjust = 0.5, size = titulo_size))
+
+grid.arrange(arrangeGrob(grafico2, grafico3, ncol = 1),
+             grafico,
+             layout_matrix = matrix(c(1, 2), ncol = 2, byrow = FALSE),
+             widths = c(1, 2))
+```
+
+Agora, montamos uma tabela cruzada juntando as acessibilidades em apenas uma coluna, para realizarmos o teste de Qui-Quadrado para conferir a independência entre variáveis, faremos isso também com todos os próximos cruzamentos.\
+No caso da Qui-Quadrado, estatística de teste seria o grau de concordância da nossa amostra, com a hipótese de que as variáveis são independentes; ou não possuem associação.
+E o p-valor é a probabilidade de que a associação entre as variáveis da amostra é ao acaso, usando 0,05 como valor crítico.
+A estatística de teste é o valor 11,535 e seu p-valor é 0,02116.
+Usando o nível de significância de 5%, e 4 graus de liberdade, a estatística de teste entra num valor crítico, porém o p-valor abaixo dos 0,05.
+Podemos então considerar que o gênero afeta na opinião sobre acessibilidade.
+
+```{r include=FALSE}
+
+#Ordenação nas Tabelas
+ordem <- c("Ótimo", "Bom", "Regular", "Ruim", "Péssimo")
+base1$como_considera_acessibilidade_arquitetonica_ufsm <- factor(base1$como_considera_acessibilidade_arquitetonica_ufsm, levels = ordem)
+base1$como_considera_acessibilidade_atitudinal_ufsm <- factor(base1$como_considera_acessibilidade_atitudinal_ufsm, levels = ordem)
+base1$como_considera_acessibilidade_instrumental_digital_ufsm <- factor(base1$como_considera_acessibilidade_instrumental_digital_ufsm, levels = ordem)
+base1$como_considera_acessibilidade_comunicacional_ufsm <- factor(base1$como_considera_acessibilidade_comunicacional_ufsm, levels = ordem)
+
+```
+
+```{r echo=FALSE}
+df2 <- data.frame(a = unlist(c(base1$como_considera_acessibilidade_arquitetonica_ufsm,base1$como_considera_acessibilidade_atitudinal_ufsm,base1$como_considera_acessibilidade_instrumental_digital_ufsm,base1$como_considera_acessibilidade_comunicacional_ufsm)),b=unlist(c(base1$genero,base1$genero,base1$genero,base1$genero)))
+
+
+
+##Labels para Variáveis
+df2 = apply_labels(df2, a =  "Respostas",
+                     b = "Gênero")
+
+
+satis2<-crosstable(df2, b, by = a, total="both")%>%
+  as_flextable(by_header="Acessibilidade Geral")
+satis2 
+
+
+```
+
+```{r include=FALSE}
+msatis2<-matrix(c(5,16,42,52,53,45,19,11,9,4), ncol=5)
+msatis2
+chisq.test(msatis2)
+
+```
+
+### Campi x Grau de satisfação para questões de acessibilidade
+
+Na nossa base de dados temos 59 pessoas do campus de Santa Maria, 3 de Cachoeira do Sul, 1 de Frederico Westphalene 1 de Palmeira das Missões.
+Abaixo temos o gráfico de barras que mostra a quantidade de respostas em cada nível para cada campus para questões de opinião em relação à acessibilidade.
+Primeiro vamos olhar pros resultados dos servidores de Santa Maria, já que são a maioria na nossa base.
+
+```{r, include=FALSE}
+# campus x grau de satisfacao
+# acessibilidade arquitetonica
+table(base1$campus)
+table(base1$campus,base1$como_considera_acessibilidade_arquitetonica_ufsm)
+
+base_cachoeira <- base1[base1$campus == unname(unlist(unique(base1$campus)))[2], ]
+base_frederico <- base1[base1$campus == unname(unlist(unique(base1$campus)))[4], ]
+base_palmeiras <- base1[base1$campus == unname(unlist(unique(base1$campus)))[3], ]
+base_santa  <- base1[base1$campus == unname(unlist(unique(base1$campus)))[1], ]
+
+print(sprintf('Percentual de respostas ruim ou péssimo para os arquitetônica é de %.1f %%, para comunicacional é de %.1f %%, para instrumental é de %.1f %% e atitudinal é de %.1f %%', 
+               sum(base_santa$como_considera_acessibilidade_arquitetonica_ufsm %in% c("Ruim", "Péssimo")) / nrow(base_santa) * 100, 
+               sum(base_santa$como_considera_acessibilidade_comunicacional_ufsm %in% c("Ruim", "Péssimo")) / nrow(base_santa) * 100,
+              sum(base_santa$como_considera_acessibilidade_instrumental_digital_ufsm %in% c("Ruim", "Péssimo")) / nrow(base_santa) * 100, 
+              sum(base_santa$como_considera_acessibilidade_atitudinal_ufsm %in% c("Ruim", "Péssimo")) / nrow(base_santa) * 100 ))
+```
+
+Em relação às questões de acessibilidade da UFSM para servidores de Santa Maria, vemos que a maioria fica entre bom e regular.
+Porém, olhando para o percentual de respostas Ruim ou Péssimo, a acessibilidade arquitetônica tem 20.3% e a atitudinal é de 11.9%.
+Isso indica que os servidores possam estar mais insatisfeito com questões relacionadas a rampas, elevadores e banheiros adaptados e etc, do que com questões de incentivo a percepções sem preconceitos, discriminações, estigmas e etc.
+
+```{r, echo=FALSE,warning=FALSE,warning=FALSE,fig.height=7, fig.width=10}
+# apenas Santa Maria
+texto_size <- 2.5 #  tamanho do texto para as frequências
+titulo_size <- 10 # tamanho do título dos gráficos
+
+grafico <- ggplot(base_santa, aes(x = factor(como_considera_acessibilidade_arquitetonica_ufsm, levels=ordem))) +
+  geom_bar(position = "dodge", fill = "#A9B388") +
+  geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
+  labs(x = "Acessibilidade Arquitetônica na UFSM", y = "Frequência absoluta") +
+  ggtitle("Avaliação da Acessibilidade Arquitetônica") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5), 
+        axis.title.y = element_blank(),  
+        axis.text.y = element_blank(),  
+        axis.ticks.y = element_blank(),axis.title.x = element_text(size = 9)) 
+
+grafico2 <- ggplot(base_santa, aes(x = factor(como_considera_acessibilidade_atitudinal_ufsm,levels=ordem))) +
+  geom_bar(position = "dodge", fill = "#A9B388") +
+  geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
+  labs(x = "Acessibilidade Atitudinal na UFSM", y = "Frequência absoluta") +
+  ggtitle("Avaliação da Acessibilidade Atitudinal") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5), 
+        axis.title.y = element_blank(),  
+        axis.text.y = element_blank(),  
+        axis.ticks.y = element_blank(),axis.title.x = element_text(size = 9)) 
+
+grafico3 <- ggplot(base_santa, aes(x = factor(como_considera_acessibilidade_comunicacional_ufsm,levels=ordem))) +
+  geom_bar(position = "dodge", fill = "#A9B388") +
+  geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
+  labs(x = "Acessibilidade Comunicacional na UFSM", y = "Frequência absoluta") +
+  ggtitle("Avaliação da Acessibilidade Comunicacional") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5), 
+        axis.title.y = element_blank(),  
+        axis.text.y = element_blank(),  
+        axis.ticks.y = element_blank(),axis.title.x = element_text(size = 9)) 
+
+
+grafico4 <- ggplot(base_santa, aes(x = factor(como_considera_acessibilidade_instrumental_digital_ufsm, levels = ordem))) +
+  geom_bar(position = "dodge", fill = "#A9B388", stat = "count") +
+geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
+  labs(x = "Acessibilidade Instrumental/Digital na UFSM", y = "") +  # Remove o rótulo do eixo y
+  ggtitle("Avaliação da Acessibilidade Instrumental/Digital") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5), 
+        axis.title.y = element_blank(),  
+        axis.text.y = element_blank(),  
+        axis.ticks.y = element_blank(),axis.title.x = element_text(size = 9)) 
+
+grid.arrange(grafico, grafico2, grafico3, grafico4,
+             ncol = 2, nrow = 2,
+             heights  = c(1,1), 
+             top = "Respostas dos servidores de Santa Maria em relação ao grau de satisfação com a acessibilidade")
+
+```
+
+Como os demais campus tem poucos servidores participantes da pesquisa o resumo de suas respostas em relação a satisfação da acessibilidade estarão na tabela abaixo, juntamente com o resumo do campus Santa Maria.
+Avaliando as respostas individualmente, o campus de Cachoeira do Sul obteve Bom como a maioria de suas respostas às perguntas de acessibilidade (58,33%).
+O servidor do campus de Frederico Westphalen repondeu duas perguntas com Bom e duas com Regular.
+Já o servidor de Palmeira das Missões repondeu com Regular para todas as perguntas.
+E os servidores de Santa Maria responderam pra maioria das questões Regular (37,71%).\
+Pela tabela cruzada, vemos que amostragem em dois dos Campi são extremamente baixas, visando isso, um teste para associação entre as variáveis não parece muito viável.
+
+```{r, echo=FALSE,warning=FALSE,warning=FALSE}
+df <- data.frame(a = unlist(c(base1$como_considera_acessibilidade_arquitetonica_ufsm,base1$como_considera_acessibilidade_atitudinal_ufsm,base1$como_considera_acessibilidade_instrumental_digital_ufsm,base1$como_considera_acessibilidade_comunicacional_ufsm)),b=unlist(c(base1$campus,base1$campus,base1$campus,base1$campus)))
+df = apply_labels(df, a =  "Respostas",
+                     b = "Campus")
+satis<-crosstable(df, b, by = a, total="both")%>%
+  as_flextable(by_header="Acessibilidade Geral")
+satis
+```
+
+### Idade X Grau de satisfação para questões de acessibilidade
+
+Temos servidores de 33 a 69 anos na nossa base.
+Para fazer uma análise desta variável iremos separar as pessoas em intervalos de idade através do método dos quantis, que divide os dados em intervalos de tamanho aproximadamente igual, garantindo uma distribuição uniforme.
+Desta forma, temos quatro intervalos de dados: [33,40] com 17 pessoas, (40,46] com 19 pessoas, (46,53] com 13 pessoas e (53,69] com 15 pessoas.
+
+```{r, echo=FALSE,warning=FALSE,warning=FALSE}
+# criacao de intervalo de idade
+base1$idade <- as.numeric(base1$idade)
+quantis <- quantile(base1$idade, probs = seq(0, 1, 0.25))
+intervalos <- cut(as.numeric(base1$idade), breaks = quantis, include.lowest = TRUE)
+base1$intervalo_idade <- intervalos
+
+#gerando tabela
+df <- data.frame(a = unlist(c(base1$como_considera_acessibilidade_arquitetonica_ufsm,base1$como_considera_acessibilidade_atitudinal_ufsm,base1$como_considera_acessibilidade_instrumental_digital_ufsm,base1$como_considera_acessibilidade_comunicacional_ufsm)),b=unlist(c(base1$intervalo_idade,base1$intervalo_idade,base1$intervalo_idade,base1$intervalo_idade)))
+df = apply_labels(df, a =  "Respostas",
+                     b = "Intervalo de idade")
+satis<-crosstable(df, b, by = a, total="both")%>%
+  as_flextable(by_header="Acessibilidade Geral")
+
+means <- base1 %>% 
+  group_by(intervalo_idade) %>% 
+  summarize(arquitetonica_media = mean(arquitetonica_num, na.rm = TRUE),
+            atitudinal_media = mean(atitudinal_num, na.rm = TRUE),
+            comunicacional_media = mean(comunicacional_num, na.rm = TRUE),
+            instrumental_digital_media = mean(instrumental_digital_num, na.rm = TRUE))
+
+```
+
+Apresentamos abaixo dois gráficos que ilustram a satisfação dos servidores com relação à acessibilidade, divididos por faixa etária.
+Observa-se que a faixa etária de 46 a 53 anos demonstra maior satisfação na questão comunicacional, em comparação com as outras faixas etárias.
+
+Por outro lado, na questão atitudinal, os resultados são diferentes.
+A faixa etária de 40 a 46 anos mostra-se mais satisfeita, enquanto a faixa de 46 a 53 anos é a menos satisfeita.
+Vale ressaltar que ao mencionar 'mais satisfeito', estamos comparando o percentual de respostas classificadas como Bom e Ótimo em relação às demais.
+
+```{r, echo=FALSE,warning=FALSE,warning=FALSE,fig.height=5, fig.width=10, fig.align='center'}
+texto_size <- 2.5 #  tamanho do texto para as frequências
+titulo_size <- 10 # tamanho do título dos gráficos
+
+grafico1 <- ggplot(base1, aes(x = factor(intervalo_idade), fill = como_considera_acessibilidade_comunicacional_ufsm)) +
+  geom_bar(position = "fill") +
+  geom_text(aes(label = ..count..), stat = "count", position = position_fill(vjust = 0.5), size = 3,  color = "white") + # Adicionar rótulos de texto
+  labs(x = "Faixa etária", y = "Percentual", fill = "Resposta") +
+  ggtitle("Avaliação da Acessibilidade Comunicacional por faixa etária") +
+  scale_fill_manual(values = c("Péssimo" = "#582F0E", "Ruim" = "#7F4F24", "Regular" = "#B99470", "Bom" = "#5F6F52", "Ótimo" = "#A9B388")) +
+  theme_minimal() +
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5),
+        axis.title.x = element_text(size = 9),
+        legend.position = "bottom")
+
+grafico2 <- ggplot(base1, aes(x = factor(intervalo_idade), fill = como_considera_acessibilidade_atitudinal_ufsm)) +
+  geom_bar(position = "fill") +
+  geom_text(aes(label = ..count..), stat = "count", position = position_fill(vjust = 0.5), size = 3,  color = "white") + # Adicionar rótulos de texto
+  labs(x = "Faixa etária", y = "Percentual", fill = "Resposta") +
+  ggtitle("Avaliação da Acessibilidade Atitudinal por faixa etária") +
+  scale_fill_manual(values = c("Péssimo" = "#582F0E", "Ruim" = "#7F4F24", "Regular" = "#B99470", "Bom" = "#5F6F52", "Ótimo" = "#A9B388")) +
+  theme_minimal() +
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5),
+        axis.title.x = element_text(size = 9),
+        legend.position = "bottom")
+
+grid.arrange(grafico1, grafico2, ncol = 2)
+```
+
+A seguir, apresentamos a satisfação dos servidores em relação à acessibilidade instrumental/digital e arquitetônica.
+Na questão da acessibilidade instrumental/digital, destaca-se que a faixa etária mais satisfeita é a de 40 a 46 anos.
+Identificar a faixa etária menos satisfeita é mais desafiador, pois apresentam resultados semelhantes.
+Em relação à acessibilidade arquitetônica, observa-se que a faixa etária de 46 a 53 anos apresenta as melhores respostas, enquanto a faixa etária de 53 a 69 anos demonstra menos satisfação.
+
+```{r, echo=FALSE,warning=FALSE,fig.height=5, fig.width=10, fig.align='center'}
+
+grafico1 <- ggplot(base1, aes(x = factor(intervalo_idade), fill = como_considera_acessibilidade_instrumental_digital_ufsm)) +
+  geom_bar(position = "fill") +
+  geom_text(aes(label = ..count..), stat = "count", position = position_fill(vjust = 0.5), size = 3,  color = "white") + # Adicionar rótulos de texto
+  labs(x = "Faixa etária", y = "Percentual", fill = "Resposta") +
+  ggtitle("Avaliação da Acessibilidade Instrumental/Digital por faixa etária") +
+  scale_fill_manual(values = c("Péssimo" = "#582F0E", "Ruim" = "#7F4F24", "Regular" = "#B99470", "Bom" = "#5F6F52", "Ótimo" = "#A9B388")) +
+  theme_minimal() +
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5),
+        axis.title.x = element_text(size = 9),
+        legend.position = "bottom")
+
+grafico2 <- ggplot(base1, aes(x = factor(intervalo_idade), fill = como_considera_acessibilidade_arquitetonica_ufsm)) +
+  geom_bar(position = "fill") +
+  geom_text(aes(label = ..count..), stat = "count", position = position_fill(vjust = 0.5), size = 3,  color = "white") + # Adicionar rótulos de texto
+  labs(x = "Faixa etária", y = "Percentual", fill = "Resposta") +
+  ggtitle("Avaliação da Acessibilidade Arquitetônica por faixa etária") +
+  scale_fill_manual(values = c("Péssimo" = "#582F0E", "Ruim" = "#7F4F24", "Regular" = "#B99470", "Bom" = "#5F6F52", "Ótimo" = "#A9B388")) +
+  theme_minimal() +
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5),
+        axis.title.x = element_text(size = 9),
+        legend.position = "bottom")
+
+grid.arrange(grafico1, grafico2, ncol = 2)
+
+```
+
+Atribuímos nota às respostas às questões de acessibilidade, sendo Péssimo = 1, Ruim = 2, Regular = 3, Bom = 4 e Ótimo = 5.
+Na tabela abaixo temos a média desta pontuação e podemos ver um pouco mais claramente o que esta nos gráficos acima.
+Para a tabela cruzada, podemos ver que há algumas diferenças nas proporções, então a categoria "Ótimo" é maior proporcionalmente entre os servidores de 53 a 69 anos.
+O teste Qui-Quadrado dá um p-valor de 0.3434, isso nos diz que não há associação significativa entre a idade e a satisfação sobre acessibilidade.
+
+```{r, echo=FALSE,warning=FALSE}
+#gerando tabela
+df5 <- data.frame(a = unlist(c(base1$como_considera_acessibilidade_arquitetonica_ufsm,base1$como_considera_acessibilidade_atitudinal_ufsm,base1$como_considera_acessibilidade_instrumental_digital_ufsm,base1$como_considera_acessibilidade_comunicacional_ufsm)),b=unlist(c(base1$intervalo_idade,base1$intervalo_idade,base1$intervalo_idade,base1$intervalo_idade)))
+df5 = apply_labels(df5, a =  "Respostas",
+                     b = "Intervalo de idade")
+satis5<-crosstable(df5, b, by = a, total="both")%>%
+  as_flextable(by_header="Acessibilidade Geral")
+
+means <- base1 %>% 
+  group_by(intervalo_idade) %>% 
+  summarize(arquitetonica_media = mean(arquitetonica_num, na.rm = TRUE),
+            atitudinal_media = mean(atitudinal_num, na.rm = TRUE),
+            comunicacional_media = mean(comunicacional_num, na.rm = TRUE),
+            instrumental_digital_media = mean(instrumental_digital_num, na.rm = TRUE)) %>% rename("Faixa etária" = intervalo_idade, "Média Arquitetônica" = arquitetonica_media, "Média Atitudinal" = atitudinal_media, "Média Comunicacional" = comunicacional_media,"Média Instrumental/Digital" = instrumental_digital_media)
+knitr::kable(means, caption = "Média das notas para as questões de acessibilidade por intervalo de idade do servidor")
+satis5
+
+```
+
+```{r include=FALSE}
+msatis5<-matrix(c(3,5,5,8,27,31,20,16,26,31,14,27,10,5,9,6,2,4,4,3), ncol=5)
+msatis5
+chisq.test(msatis5)
+
+```
+
+### Tipo de deficiência mais comum X Grau de satisfação para questões de acessibilidade
+
+O tipo de deficiência mais comum que temos entre os servidores participantes da pesquisa é a deficiência visual (35,94%) como vemos na tabela abaixo.
+
+```{r , echo=FALSE, warning=FALSE}
+qtd <- base1 %>% 
+  group_by(deficiencia) %>% 
+  summarize(Quantidade = n()) %>% 
+  mutate(Percentual = round((Quantidade / nrow(base1)) * 100, 2)) %>%
+  rename('Tipo de deficiência' = deficiencia)
+knitr::kable(qtd, caption = "Quantidade e percentual de servidores com determinados tipos de deficiência")
+
+```
+
+Em relação às questões de acessibilidade para os servidores com deficiência visual, observamos os gráficos abaixo.
+A acessibilidade comunicacional e a instrumental/digital foram avaliadas de forma bastante parecida.
+Ambas tiveram a maioria das avaliações em Regular (12) e em segundo lugar Bom (6), com o mesmo número.
+A avaliação da acessibilidade atitudinal teve mais respostas Ótimo do que as demais questões, e a mesma proporção de respostas em Bom e Regular.
+Sobre a acessibilidade arquitetônica os servidores a resposta mais frequente foi Regular (10) e em seguida, Bom (8).
+
+```{r, echo=FALSE,warning=FALSE,fig.height=7, fig.width=10, fig.align='center'}
+# visual
+texto_size <- 2.5 #  tamanho do texto para as frequências
+titulo_size <- 10 # tamanho do título dos gráficos
+
+base_visual <- base1[base1$deficiencia == 'Visual', ]
+
+grafico <- ggplot(base_visual, aes(x = factor(como_considera_acessibilidade_arquitetonica_ufsm, levels=ordem))) +
+  geom_bar(position = "dodge", fill = "#A9B388") +
+  geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
+  labs(x = "Acessibilidade Arquitetônica na UFSM", y = "Frequência absoluta") +
+  ggtitle("Avaliação da Acessibilidade Arquitetônica") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5), 
+        axis.title.y = element_blank(),  
+        axis.text.y = element_blank(),  
+        axis.ticks.y = element_blank(),axis.title.x = element_text(size = 9)) 
+
+grafico2 <- ggplot(base_visual, aes(x = factor(como_considera_acessibilidade_atitudinal_ufsm,levels=ordem))) +
+  geom_bar(position = "dodge", fill = "#A9B388") +
+  geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
+  labs(x = "Acessibilidade Atitudinal na UFSM", y = "Frequência absoluta") +
+  ggtitle("Avaliação da Acessibilidade Atitudinal") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5), 
+        axis.title.y = element_blank(),  
+        axis.text.y = element_blank(),  
+        axis.ticks.y = element_blank(),axis.title.x = element_text(size = 9)) 
+
+grafico3 <- ggplot(base_visual, aes(x = factor(como_considera_acessibilidade_comunicacional_ufsm,levels=ordem))) +
+  geom_bar(position = "dodge", fill = "#A9B388") +
+  geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
+  labs(x = "Acessibilidade Comunicacional na UFSM", y = "Frequência absoluta") +
+  ggtitle("Avaliação da Acessibilidade Comunicacional") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5), 
+        axis.title.y = element_blank(),  
+        axis.text.y = element_blank(),  
+        axis.ticks.y = element_blank(),axis.title.x = element_text(size = 9)) 
+
+
+grafico4 <- ggplot(base_visual, aes(x = factor(como_considera_acessibilidade_instrumental_digital_ufsm, levels = ordem))) +
+  geom_bar(position = "dodge", fill = "#A9B388", stat = "count") +
+geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
+  labs(x = "Acessibilidade Instrumental/Digital na UFSM", y = "") +  # Remove o rótulo do eixo y
+  ggtitle("Avaliação da Acessibilidade Instrumental/Digital") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5), 
+        axis.title.y = element_blank(),  
+        axis.text.y = element_blank(),  
+        axis.ticks.y = element_blank(),axis.title.x = element_text(size = 9)) 
+
+grid.arrange(grafico, grafico2, grafico3, grafico4,
+             ncol = 2, nrow = 2,
+             heights  = c(1,1), 
+             top = "Respostas dos servidores com deficiência visual em relação ao grau de satisfação com a acessibilidade")
+
+```
+
+Incluímos na tabela abaixo a quantidade/percentual agrupado das demais deficiências menos comuns.
+Os servidores com deficiência visual marcaram a maioria das questões com Regular (46,74%) e em segundo lugar Bom (31,52%).
+Os servidores portadores da segunda deficiência mais comum, a Física ou Motora, marcaram mais a opção Bom (50%) e em segundo Regular (39,06%).
+
+Sobre a associação entre variáveis, o teste de Qui-Quadrado acusa que a deficiência do servidor afeta em sua opinião sobre a acessibilidade, dado que o p-valor é abaixo do nível de significância(0,05).
+
+```{r, echo=FALSE, warning=FALSE}
+
+#gerando tabela
+df4 <- data.frame(a = unlist(c(base1$como_considera_acessibilidade_arquitetonica_ufsm,base1$como_considera_acessibilidade_atitudinal_ufsm,base1$como_considera_acessibilidade_instrumental_digital_ufsm,base1$como_considera_acessibilidade_comunicacional_ufsm)),b=unlist(c(base1$deficiencia,base1$deficiencia,base1$deficiencia,base1$deficiencia)))
+
+df4 = apply_labels(df4, a =  "Respostas",
+                     b = "Deficiencia")
+satis4<-crosstable(df4, b, by = a, total="both")%>%
+  as_flextable(by_header="Acessibilidade Geral")
+
+satis4
+```
+
+```{r include=FALSE}
+msatis4<-matrix(c(6,0,4,0,4,0,0,7,5,2,32,1,21,3,1,29,12,2,25,1,9,5,1,43,6,0,2,6,4,1,9,3,0,1,0,4,0,1,4), ncol=4)
+msatis4
+chisq.test(msatis4)
+```
+
+### Data de ingresso X Entrada por cotas
+
+Observando o número de servidores com deficiência que ingressaram na UFSM por ano, notamos que 2016 registrou o maior número de ingressantes, com 8 pessoas, seguido por 2014, com 5 pessoas.
+Ao lado, apresentamos um gráfico de pizza que ilustra a proporção de servidores que ingressaram por meio de cotas para pessoas com deficiência na UFSM.
+Da amostra de 64 participantes da pesquisa, a maioria, 45 pessoas (70,31%), ingressou sem cotas.
+
+```{r, echo=FALSE,warning=FALSE,fig.height=4, fig.width=12, fig.align='center'}
+# cria tabela com quantidade e percentual de sim/nao
+qtd <- base1 %>% 
+  group_by(ingresso_cotas_pcd) %>% 
+  summarize(Quantidade = n()) %>% 
+  mutate(Percentual = paste0(round((Quantidade / nrow(base1)) * 100, 2), "%"))
+
+grafico_linhas <- ggplot(data = base1, aes(x = ano_ingresso, y = ..count..)) +
+  geom_line(stat = "count", color = "#A9B388", linewidth = 1.5) +  # Linha verde e mais espessa
+  geom_text(stat = "count", aes(label = ..count..), vjust = 1.5, size = 3, fontface = "bold") +  
+  labs(x = "Ano de Ingresso", y = NULL, title = "Frequência da entrada dos servidores deficientes por ano de ingresso") +  
+  theme_minimal() +  
+  theme(axis.title.y = element_blank(),  
+        axis.text.y = element_blank(),  
+        plot.title = element_text(hjust = 0.5))  
+
+pizza <- ggplot(qtd, aes(x = "", y = Quantidade, fill = ingresso_cotas_pcd)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar(theta = "y") +
+  geom_text(aes(label = paste0(Quantidade, "\n", Percentual)),
+            position = position_stack(vjust = 0.5), size = 4, color = "white", fontface = "bold") + 
+  labs(title = "Ingresso por Cotas para pessoas com deficiência", fill = "Ingresso por cotas PCD") +
+  scale_fill_manual(values = c("Sim" = "#7F4F24", "Não" = "#B99470")) +  
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0.5),
+        legend.position = "bottom") 
+
+grid.arrange(grafico_linhas,pizza, ncol = 2)
+```
+
+Devido à falta de uma amostra substancial por ano de ingresso, optaremos por agrupar os indivíduos em intervalos de ano de entrada.
+Seguiremos a abordagem dos quantis para essa divisão, que segmenta os dados em intervalos de tamanho aproximadamente igual.
+Na tabela abaixo, apresentamos a distribuição dos grupos, a quantidade de servidores em cada um e os respectivos percentuais de entrada por cota ou sem cota.
+
+```{r, echo=FALSE, warning=FALSE, flg.align='center'}
+##Ano x Ingresso por Cotas
+base1$ano_ingresso <- as.numeric(base1$ano_ingresso)
+quantis <- quantile(base1$ano_ingresso, probs = seq(0, 1, 0.25))
+intervalos <- cut(base1$ano_ingresso, breaks = quantis, include.lowest = TRUE)
+base1$intervalo_ano_ingresso <- intervalos
+
+
+#gerando tabela
+df3 <- data.frame(a = unlist(c(base1$intervalo_ano_ingresso)), b =  unlist(c(base1$ingresso_cotas_pcd)))
+df3 = apply_labels(df3, a =  "Intervalo de ano de ingresso",
+                     b = "Ingresso por cotas PCD")
+satis3<-crosstable(df3, b, by = a, total="both")%>%
+  as_flextable(by_header="Intervalo de ano de ingresso na UFSM")
+
+satis3
+```
+
+```{r include=FALSE}
+msatis3<-matrix(c(13,3,15,2,12,9,5,5), ncol=4)
+msatis3
+chisq.test(msatis3)
+
+```
+
+Ainda utilizando o método do Qui-Quadrado com 5% de significância, obtivemos: 0,06421 para o p-valor.
+Dado que excedemos o limite de significância, devemos considerar que não há associação significativa entre as variáveis, ou seja, a data de ingresso não está relacionada a entrada por cotas.
+
+```{r, echo=FALSE,warning=FALSE,warning=FALSE,fig.height=6, fig.width=6, fig.align='center'}
+quantis <- quantile(base1$ano_ingresso, probs = seq(0, 1, 0.25))
+intervalos <- cut(base1$ano_ingresso, breaks = quantis, include.lowest = TRUE)
+base1$intervalo_ano_ingresso <- intervalos
+
+grafico1 <- ggplot(base1, aes(x = factor(intervalo_ano_ingresso), fill = ingresso_cotas_pcd)) +
+  geom_bar(position = "fill") +
+  geom_text(aes(label = ..count..), stat = "count", position = position_fill(vjust = 0.5), size = 3,  color = "white") + # Adicionar rótulos de texto
+  labs(x = "Intervalo do ano de ingresso", y = "Percentual", fill = "Ingresso por cota PCD") +
+  ggtitle("Ingresso por cota de PCD por intervalo do ano de ingresso") +
+  scale_fill_manual(values = c("Sim" = "#5F6F52", "Não" = "#A9B388")) +
+  theme_minimal() +
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5),
+        axis.title.x = element_text(size = 9),
+        legend.position = "bottom")
+grafico1
+```
+
+### Idade X Conhecimento da legislação
+
+Na tabela abaixo, observa-se que a maioria dos servidores com deficiência declara conhecer a legislação brasileira sobre acessibilidade (48,44%).
+O segundo maior grupo respondeu que "não conhece nem desconhece" (25%).
+Ao agruparmos as respostas "conheço" e "conheço totalmente", totalizam mais da metade dos servidores (56,25%).
+Portanto, aparentemente, a maioria deles está familiarizada com a legislação.
+
+```{r, echo=FALSE, warning=FALSE, flg.align='center'}
+#Ordem tabelas
+ordem3 <- c("conheço totalmente", "conheço", "não conheço nem desconheço", "desconheço", "desconheço totalmente")
+base1$conhece_legislacao_br_sobre_acessibilidade <- factor(base1$conhece_legislacao_br_sobre_acessibilidade, levels = ordem3)
+
+
+
+
+
+
+
+#gerando tabela
+df6 <- data.frame(a = unlist(c(base1$intervalo_idade)), b =  unlist(c(base1$conhece_legislacao_br_sobre_acessibilidade)))
+df6 = apply_labels(df6, a =  "Faixa etária",
+                     b = "Conhecimento legislação brasileira sobre acessibilidade")
+satis6<-crosstable(df6, b, by = a, total="both")%>%
+  as_flextable(by_header="Faixa etária")
+
+satis6
+```
+
+```{r include=FALSE}
+msatis6<-matrix(c(1,10,4,2,0,0,7,7,4,1,4,4,2,2,1,0,10,3,2,0), ncol=4)
+msatis6
+chisq.test(msatis6)
+```
+
+Após a realização do teste, verificamos que o p-valor excede o nível de significância, então podemos dizer que a faixa etária não afeta no conhecimento sobre a legislação sobre acessibilidade.
+
+```{r, echo=FALSE,warning=FALSE,warning=FALSE,fig.height=5, fig.width=10, fig.align='center'}
+texto_size <- 2.5 #  tamanho do texto para as frequências
+titulo_size <- 10 # tamanho do título dos gráficos
+
+grafico1 <- ggplot(base1, aes(x = factor(intervalo_idade), fill = conhece_legislacao_br_sobre_acessibilidade)) +
+  geom_bar(position = "fill") +
+  geom_text(aes(label = ..count..), stat = "count", position = position_fill(vjust = 0.5), size = 3,  color = "white") + # Adicionar rótulos de texto
+  labs(x = "Intervalo de Idade", y = "Percentual", fill = "Resposta") +
+  ggtitle("Conhecimento da legislação do Brasil sobre acessibilidade por faixa etária") +
+  scale_fill_manual(values = c("desconheço totalmente" = "#582F0E", "desconheço" = "#7F4F24", "não conheço nem desconheço" = "#B99470", "conheço totalmente" = "#5F6F52", "conheço" = "#A9B388")) +
+  theme_minimal() +
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5),
+        axis.title.x = element_text(size = 9),
+        legend.position = "bottom")
+
+grafico1
+```
+
+### Satisfação x Tempo de serviço
+
+Assim como ocorre com a amostra de ano de ingresso, enfrentamos uma limitação semelhante em relação ao tempo de serviço dos servidores (uma variável derivada do ano de ingresso).
+Por essa razão, optaremos por agrupar os indivíduos em intervalos de tempo de serviço.
+Novamente, adotaremos a abordagem dos quantis para essa divisão, que segmenta os dados em intervalos de tamanho aproximadamente igual.
+
+Em nossa base de dados, encontramos pessoas com períodos de serviço variando de 1 a 36 anos na UFSM, conforme demonstrado na tabela abaixo, que apresenta a distribuição dos grupos cruzados com a satisfação no local de trabalho.
+Observa-se que, em termos de satisfação, a maioria dos servidores se declara satisfeita (43,75%), seguida por aqueles que se sentem muito satisfeitos (21,88%).
+
+```{r, echo=FALSE, warning=FALSE, flg.align='center'}
+## criei por quantis mas como deu numero com virgula só tirei as virgulas e coloquei na mao os intervalos
+base1$tempo_servico <- 2024 -base1$ano_ingresso
+base1$intervalo_tempo_servico <- cut(base1$tempo_servico, breaks = c(0, 8, 13, 18, 36), labels = c("[0,8]", "(8,13]", "(13,18]", "(18,36]"))
+
+#Ordem tabelas
+ordem2 <- c("totalmente satisfeito", "muito satisfeito", "satisfeito", "pouco satisfeito", "nada satisfeito")
+base1$sentimento_local_trabalho <- factor(base1$sentimento_local_trabalho, levels = ordem2)
+
+
+
+#gerando tabela
+df7 <- data.frame(a = unlist(c(base1$intervalo_tempo_servico)), b =  unlist(c(base1$sentimento_local_trabalho)))
+df7 = apply_labels(df7, a =  "Intervalo de tempo de serviço",
+                     b = "Sentimento no local de trabalho")
+satis7<-crosstable(df7, b, by = a, total="both")%>%
+  as_flextable(by_header="Você se sente satisfeito/realizado/reconhecido/útil no local de trabalho?")
+
+satis7
+```
+
+```{r include=FALSE}
+
+msatis7<-matrix(c(5,2,9,1,1,1,8,3,2,1,6,4,4,0,3,5,7,0,1), ncol=4)
+msatis7
+chisq.test(msatis7)
+
+```
+
+O teste feito usando a tabela cruzada nos dá um p-valor menor que o nível de significância, então consideramos que o tempo de serviço afeta no sentimento sobre o local de trabalho significamente.Porém, olhando o gráfico, podemos ver que as pessoas que estão na Universidade entre 8 e 13 anos possuem a menor proporção de totalmente e muito satisfeito; e possui a maior quantidade de insatisfeitos.
+
+```{r, echo=FALSE,warning=FALSE,warning=FALSE,fig.height=5, fig.width=10, fig.align='center'}
+texto_size <- 2.5 #  tamanho do texto para as frequências
+titulo_size <- 10 # tamanho do título dos gráficos
+
+grafico1 <- ggplot(base1, aes(x = factor(intervalo_tempo_servico), fill = sentimento_local_trabalho)) +
+  geom_bar(position = "fill") +
+  geom_text(aes(label = ..count..), stat = "count", position = position_fill(vjust = 0.5), size = 3,  color = "white") + # Adicionar rótulos de texto
+  labs(x = "Anos de serviço", y = "Percentual", fill = "Resposta") +
+  ggtitle("Sentimento no local de trabalho por tempo de serviço") +
+  scale_fill_manual(values = c("nada satisfeito" = "#582F0E", "pouco satisfeito" = "#7F4F24", "satisfeito" = "#B99470", "totalmente satisfeito" = "#5F6F52", "muito satisfeito" = "#A9B388")) +
+  theme_minimal() +
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5),
+        axis.title.x = element_text(size = 9),
+        legend.position = "bottom")
+
+grafico1
+```
+
+### Satisfação X Escolaridade
+
+Abaixo, encontram-se as informações sobre a escolaridade dos servidores e sua satisfação no local de trabalho.
+Observa-se que a maioria dos servidores possui doutorado (34,38%), seguido por pós-graduação lato sensu (31,25%).
+Em terceiro lugar, encontramos servidores com mestrado (20,31%), seguidos por aqueles com ensino superior completo (7,81%).
+A minoria dos servidores possui ensino superior incompleto (6,25%).
+
+```{r, echo=FALSE, warning=FALSE, flg.align='center'}
+#gerando tabela
+df8 <- data.frame(a = unlist(c(base1$escolaridade)), b =  unlist(c(base1$sentimento_local_trabalho)))
+df8 = apply_labels(df8, a =  "Escolaridade",
+                     b = "Sentimento no local de trabalho")
+satis8<-crosstable(df8, b, by = a, total="both")%>%
+  as_flextable(by_header="Escolaridade")
+
+satis8
+```
+
+```{r include=FALSE}
+
+msatis8<-matrix(c(4,6,9,1,2,0,1,2,2,0,1,1,2,0,0,4,2,5,1,1,1,4,10,4,1), ncol=5)
+msatis8
+chisq.test(msatis8)
+```
+
+Realizando o Qui-Quadrado, obtivemos um p-valor acima de 0,05, assim não há associação significativa entre a satisfação no trabalho e a Escolaridade.
+E os gráficos mostram que a proporção está bem distribuída, mesmo considerando as colunas que possuem poucos servidores.
+
+```{r, echo=FALSE,warning=FALSE,warning=FALSE,fig.height=5, fig.width=10, fig.align='center'}
+texto_size <- 2.5 #  tamanho do texto para as frequências
+titulo_size <- 10 # tamanho do título dos gráficos
+
+
+grafico1 <- ggplot(base1, aes(x = factor(escolaridade), fill = sentimento_local_trabalho)) +
+  geom_bar(position = "fill") +
+  geom_text(aes(label = ..count..), stat = "count", position = position_fill(vjust = 0.5), size = 3,  color = "white") + # Adicionar rótulos de texto
+  labs(x = "Escolaridade", y = "Percentual", fill = "Resposta") +
+  ggtitle("Sentimento no local de trabalho por escolaridade") +
+  scale_fill_manual(values = c("nada satisfeito" = "#582F0E", "pouco satisfeito" = "#7F4F24", "satisfeito" = "#B99470", "totalmente satisfeito" = "#5F6F52", "muito satisfeito" = "#A9B388")) +
+  theme_minimal() +
+  theme(plot.title = element_text(size = titulo_size, hjust = 0.5),
+        axis.title.x = element_text(size = 9),
+        legend.position = "bottom")
+
+grafico1
+```
+
+### Satisfação X Setores
+
+Observamos que a maioria dos servidores é composta por técnicos administrativos em educação (79,69%), enquanto os docentes representam a minoria (20,31%).
+Na tabela abaixo, notamos que a maior parte dos servidores docentes declara-se satisfeita ou muito satisfeita (69,23%), o que também se aplica aos técnicos administrativos (64,71%).
+O teste usando a tabela cruzada, nos dá um p-valor acima do nível de significância, então podemos considerar que não há associação significativa entre a categoria do servidor e seu sentimento sobre o local de trabalho.
+
+```{r, echo=FALSE, warning=FALSE, flg.align='center'}
+#gerando tabela
+df9 <- data.frame(a = unlist(c(base1$sentimento_local_trabalho)), b =  unlist(c(base1$categoria)))
+df9 = apply_labels(df9, a =  "Sentimento local trabalho",
+                     b = "Categoria")
+satis9<-crosstable(df9, b, by = a, total="both")%>%
+  as_flextable(by_header="Sentimento sobre o local de trabalho")
+
+satis9
+```
+
+```{r include=FALSE}
+msatis9<-matrix(c(3,7,4,10,5,23,1,7,0,4), ncol=5)
+msatis9
+chisq.test(msatis9)
+```
+
+### Objetivo de fazer o concurso X grau de satisfação
+
+A maioria dos servidores que participaram da pesquisa citaram que tinham como objetivo (ou um dos objetivos) a realização profissional quando fizeram o concurso da UFSM (68,75%).
+Em segundo lugar, citam independência financeira (67,19%), em terceiro realização pessoal (53,12%), em quarto contribuir socialmente (32,81%) e em último outros (9,38%).
+
+```{r , echo=FALSE, warning=FALSE, flg.align='center'}
+obj <- base1 %>% 
+  group_by(objetivo_quando_fez_concurso_ufsm) %>% 
+  summarize(Quantidade = n()) %>% 
+  mutate(Percentual = round((Quantidade / nrow(base1)) * 100, 2)) # base com coluna de objetivo e frequencia
+
+dados_separados <- obj %>%
+  separate_rows(objetivo_quando_fez_concurso_ufsm, sep = "\\|") %>%
+  group_by(objetivo_quando_fez_concurso_ufsm) %>%
+  summarise(Quantidade = sum(Quantidade)) %>% 
+  mutate(Percentual = round((Quantidade / nrow(base1)) * 100, 2)) %>%
+  rename('Objetivo quando fez o concurso da UFSM' = objetivo_quando_fez_concurso_ufsm) # quantidade e percentual por objetivo separadamente
+
+knitr::kable(dados_separados, caption = "Quantidade e percentual de servidores e seus objetivos de quando realizaram o concurso da UFSM")
+```
+
+Na tabela abaixo vemos o cruzamento das informações de objetivo de quando fez o concurso da UFSM e satisfação da acessibilidade comunicacional.
+A maioria dos servidores que citaram como objetivo contribuir socialmente e/ou independência financeira e/ou outro marcaram Regular.
+Já os servidores que citaram realização pessoal marcaram mais a opção Bom (44,12%).
+Enquanto os servidores que citaram como objetivo realização profissional marcaram na mesma proporção Bom e Regular (36,36%).
+
+Usando o Qui-Quadrado, obtivemos um p-valor acima de 0,05, assim podemos considerar que não há associação entre o objetivo e a opinião sobre a acessibilidade comunicacional.
+
+```{r , echo=FALSE, warning=FALSE, flg.align='center'}
+df1 <- base1 %>% select (objetivo_quando_fez_concurso_ufsm,como_considera_acessibilidade_comunicacional_ufsm) %>%
+  separate_rows(objetivo_quando_fez_concurso_ufsm, sep = "\\|") 
+
+df2 <- data.frame(a = unlist(c(df1$como_considera_acessibilidade_comunicacional_ufsm)), b =  unlist(c(df1$objetivo_quando_fez_concurso_ufsm)))
+
+df3 = apply_labels(df2, a =  "Acessibilidade comunicacional ",
+                     b = "Objetivos de quando realizaram o concurso da UFSM")
+
+satis10 <-crosstable(df3, b, by = a, total="both") %>%  as_flextable(by_header="Acessibilidade Comunicacional")
+
+satis10
+```
+
+```{r include=FALSE}
+msatis10<-matrix(c(0,3,0,1,4,8,13,1,15,16,10,21,3,13,16,2,4,1,3,5,1,2,1,2,3), ncol=5)
+msatis10
+chisq.test(msatis10)
+```
+
+Temos a informação de objetivo quando fez concurso da UFSM e satisfação da acessibilidade atitudinal na tabela abaixo.
+Na questão atitudinal, servidores que citaram como objetivo Outro e/ou realização pessoal e/ou realização profissional marcaram mais a opção Bom do que as demais.
+Os servidores que citaram como objetivo independência financeira marcaram igualmente Bom e Regular (41,86%) e quem citou contribuir socialmente marcou mais Regular que as demais opções (47,62%).
+
+```{r , echo=FALSE, warning=FALSE, flg.align='center'}
+df1 <- base1 %>% select (objetivo_quando_fez_concurso_ufsm,como_considera_acessibilidade_atitudinal_ufsm) %>%
+  separate_rows(objetivo_quando_fez_concurso_ufsm, sep = "\\|") 
+
+df2 <- data.frame(a = unlist(c(df1$como_considera_acessibilidade_atitudinal_ufsm)), b =  unlist(c(df1$objetivo_quando_fez_concurso_ufsm)))
+
+df3 = apply_labels(df2, a =  "Acessibilidade atitudinal ",
+                     b = "Objetivos de quando realizaram o concurso da UFSM")
+
+satis <-crosstable(df3, b, by = a, total="both") %>%  as_flextable(by_header="Acessibilidade Atitudinal")
+
+satis
+```
+
+```{r include=FALSE}
+msatis11<-matrix(c(2,3,0,3,7,7,18,4,16,17,10,18,1,11,15,2,4,1,2,5,0,0,0,2,0), ncol=5)
+msatis11
+chisq.test(msatis11)
+```
+
+Na avaliação da acessibilidade arquitetônica, todos os grupos indicaram predominantemente a opção Regular em comparação com as demais (embora aqueles com o objetivo de realização pessoal tenham respondido em proporções semelhantes como Bom e Regular).
+
+```{r , echo=FALSE, warning=FALSE, flg.align='center'}
+df1 <- base1 %>% select (objetivo_quando_fez_concurso_ufsm,como_considera_acessibilidade_arquitetonica_ufsm) %>%
+  separate_rows(objetivo_quando_fez_concurso_ufsm, sep = "\\|")
+
+df2 <- data.frame(a = unlist(c(df1$como_considera_acessibilidade_arquitetonica_ufsm)), b =  unlist(c(df1$objetivo_quando_fez_concurso_ufsm)))
+
+df3 = apply_labels(df2, a =  "Acessibilidade arquitetônica ",
+                     b = "Objetivos de quando realizaram o concurso da UFSM")
+
+satis <-crosstable(df3, b, by = a, total="both") %>%  as_flextable(by_header="Acessibilidade Arquitetônica")
+
+satis
+```
+
+```{r include=FALSE}
+msatis12<-matrix(c(1,1,0,1,4,7,16,2,13,15,8,18,3,13,16,4,7,0,5,6,1,1,1,2,3), ncol=5)
+msatis12
+chisq.test(msatis12)
+```
+
+Em relação a questão de acessibilidade instrumental/digital todos os grupos marcaram mais a opção Regular do que as outras, exceto o grupo que marcou como objetivo Outro, que marcou predominantemente Bom (50%).
+
+```{r , echo=FALSE, warning=FALSE, flg.align='center'}
+df1 <- base1 %>% select (objetivo_quando_fez_concurso_ufsm,como_considera_acessibilidade_instrumental_digital_ufsm) %>%
+  separate_rows(objetivo_quando_fez_concurso_ufsm, sep = "\\|")
+
+df2 <- data.frame(a = unlist(c(df1$como_considera_acessibilidade_instrumental_digital_ufsm)), b =  unlist(c(df1$objetivo_quando_fez_concurso_ufsm)))
+
+df3 = apply_labels(df2, a =  "Acessibilidade instrumental/digital ",
+                     b = "Objetivos de quando realizaram o concurso da UFSM")
+
+satis <-crosstable(df3, b, by = a, total="both") %>%  as_flextable(by_header="Acessibilidade Instrumental/Digital")
+
+satis
+```
+
+```{r include=FALSE}
+msatis11<-matrix(c(0,3,0,2,5,8,12,3,12,14,8,21,1,14,18,4,6,0,4,5,1,1,2,2,2), ncol=5)
+msatis11
+chisq.test(msatis11)
+```
+
+Abaixo temos uma tabela que atribui uma nota às respostas das questões de acessibilidade, como feito anteriormente, para resumir a informação e torná-la mais comparável.
+Em relação aos testes das últimas três tabelas, todos possuem um p-valor acima de 0,05, então podemos concluir que o objetivo não afeta na opinião dos quatro tipos de acessibilidades representadas no questionário.
+
+```{r , echo=FALSE, warning=FALSE, flg.align='center'}
+resumo <- base1 %>% select (objetivo_quando_fez_concurso_ufsm,instrumental_digital_num,comunicacional_num,arquitetonica_num,atitudinal_num) %>%
+  separate_rows(objetivo_quando_fez_concurso_ufsm, sep = "\\|") %>% 
+  group_by(objetivo_quando_fez_concurso_ufsm) %>% 
+  summarize("Média Instrumental/Digital" = mean(instrumental_digital_num),
+            "Média Arquitetonica" = mean(arquitetonica_num),
+            "Média Atitudinal" = mean(atitudinal_num),
+            "Média Comunicacional" = mean(comunicacional_num)) %>% 
+  rename('Objetivo de quando fez o concurso da UFSM' = objetivo_quando_fez_concurso_ufsm)
+knitr::kable(resumo, caption = "Média das notas para as questões de acessibilidade por objetivo de quando fez o concurso da UFSM")
+```
+
+## Referências
+
+<https://bootswatch.com/3/>
+
+<https://bookdown.org/yihui/rmarkdown/html-document.html#appearance-and-style>
+
+<https://blog.curso-r.com/posts/2021-05-19-patchwork/>
+
+<http://www.leg.ufpr.br/lib/exe/fetch.php/disciplinas:ce001:teste_do_qui-quadrado.pdf>
+
+<https://est.ufba.br/sites/est.ufba.br/files/kim/matd49-aula02-qui_quadrado-v2.pdf>
