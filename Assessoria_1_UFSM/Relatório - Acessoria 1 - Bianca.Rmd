@@ -1,5 +1,6 @@
 ---
 title: "Relatório Assessoria 1"
+author: Amanda Macedo, Lucas Barbieri, Rodrigo Fonseca e Silvana Schneider
 output: 
   html_document:
     toc: true
@@ -8,7 +9,7 @@ output:
     smooth_scroll: true
     theme: journal
     highlight: tango
-date: "2024-04-07"
+date: "2024-04-17"
 editor_options: 
   markdown: 
     wrap: sentence
@@ -103,117 +104,65 @@ Para concretizar o objetivo geral, o presente estudo almeja realizar os seguinte
 
 ## Materiais e métodos
 
-São 54 variáveis, referentes às 54 perguntas contidas no formulário preenchido pelos servidores (a última pergunta referente ao e-mail foi removida da tabela):
+São 54 variáveis, referentes às 54 perguntas contidas no formulário preenchido pelos servidores (a última pergunta referente ao e-mail foi ocultada).
+Com base nos dados coletados dessas variáveis, serão apresentados neste estudo estatísticas descritivas, incluindo gráficos de barra que salientam a relação entre algumas das variáveis, e testes qui-quadrado para comparações entre variáveis categóricas.
+Todas as análises foram realizadas em R (R version 4.3.3 (2024-02-29), com os pacotes base, pacman, gridExtra, dplyr, knitr, rmarkdown, ggplot2, kableExtra, stringi, xlsx, readxl, crosstable, flextable e tidyverse.\
+As perguntas estão abaixo acompanhadas do nome da variável que as contém:
 
--   Gênero
-
--   Qual?
-
--   Idade:
-
--   Estado civil:
-
--   Qual?
-
--   Tem filhos(as)?
-
--   Quantos:
-
--   Idade(s):
-
--   Mora com (mais de uma opção pode ser marcada):
-
--   Qual?
-
--   Escolaridade:
-
--   Qual(is) curso(s)/área(s) de conhecimento da(s) sua(s) formação(ões)?
-
--   Categoria:
-
--   Cargo:
-
--   Nível:
-
--   Nível:
-
--   Carga horária semanal:
-
--   Qual?
-
--   Unidade de lotação:
-
--   Possui Cargo de Direção (CD) ou Função Gratificada (FG)?
-
--   Campus:
-
--   Ano de ingresso como servidor na Universidade:
-
--   Ingressou por intermédio do sistema de cotas para PCD?
-
--   Você se sente satisfeito/realizado/reconhecido/útil no seu local de trabalho?
-
--   Tipo de deficiência que possui:
-
--   Qual(is)?
-
--   Possui o diagnóstico desde:
-
--   Causa:
-
--   Você utiliza alguma tecnologia assistiva/recurso?
-
--   Qual(is)?
-
--   Se utiliza alguma tecnologia assistiva/recurso, essa é disponibilizada pela UFSM?
-
--   Se não, como você consegue obter (através de recursos próprios, doações, etc)?
-
--   Você necessita de algum acompanhamento ou apoio de outra pessoa para realizar as atividades cotidianas no ambiente de trabalho?
-
--   Se necessita, em quais atividades?
-
--   Esse acompanhamento/apoio é disponibilizado pela UFSM?
-
--   Se não, como você consegue obter?
-
--   De um modo geral, como você considera o nível de acessibilidade arquitetônica da UFSM (Exemplos: rampas, elevadores e banheiros adaptados, calçadas com piso tátil, vagas reservadas em estacionamentos, etc)?
-
--   De um modo geral, como você considera o nível de acessibilidade atitudinal da UFSM (incentivo a percepções sem preconceitos, discriminações e estigmas)?
-
--   De um modo geral, como você considera o nível de acessibilidade instrumental/digital da UFSM (Ex: software de leitor de tela no computador, sites e aplicativos institucionais acessíveis e ferramentas que eliminem barreiras digitais e de instrumentos de trabalho)?
-
--   De um modo geral, como você considera o nível de acessibilidade comunicacional da UFSM (oferecimento de recursos e atividades que promovam a independência no acesso a qualquer conteúdo. Isso inclui legendas, áudios, descrições, Libras, braile, etc)?
-
--   Você conhece a legislação brasileira sobre acessibilidade?
-
--   Qual seu objetivo quando fez o concurso para a UFSM (mais de uma opção pode ser marcada)?
-
--   Qual(is)?
-
--   Você sentiu dificuldade de adaptação durante o ingresso nas atividades laborais na UFSM?
-
--   Se sim, poderia relatar?
-    Como foi resolvido?
-
--   Você enfrentou algum problema de relacionamento interpessoal com chefias e/ou colegas?
-
--   Se sim, poderia relatar?
-    Como foi resolvido?
-
--   Você já foi parte reclamante, na UFSM, em algum Processo administrativo disciplinar (PAD), Sindicância e/ou reclamatória trabalhista?
-
--   Você considera que a UFSM dispõe de recursos humanos e materiais suficientes para atender necessidades que possam eventualmente surgir relacionadas a acessibilidade?
-
--   Se não, poderia relatar o que considera insuficiente?
-
--   Você participa de alguma associação, sindicato, ou outros grupos de luta por defesa de direitos trabalhistas?
-
--   Qual?
-
--   Se participa, você sente que as pautas das PCD são consideradas nas ações dessa associação/sindicato/grupo?
-
--   Espaço para outros comentários e informações que você queira nos passar sobre inclusão e acessibilidade na UFSM:
+-   Gênero (*genero*)
+-   Outro Gênero? (*genero_outro*)
+-   Idade: (*idade*)
+-   Estado civil: (*estado_civil*)
+-   Outro Estado civil? (*outro_estado_civil*)
+-   Tem filhos(as)? (*filhos*)
+-   Quantos: (*qtd_filhos*)
+-   Idade(s): (*idade_filhos*)
+-   Mora com (mais de uma opção pode ser marcada): (*mora_com*)
+-   Outro Mora com? (*outro_mora_com*)
+-   Escolaridade: (*escolaridade*)
+-   Qual(is) curso(s)/área(s) de conhecimento da(s) sua(s) formação(ões)? (*curso_formacao*)
+-   Categoria: (*categoria*)
+-   Cargo: (*cargo*)
+-   Nível: *(cargo_nivel1)*
+-   Nível: (*cargo_nivel2*)
+-   Carga horária semanal: (*carga_horaria_semanal*)
+-   Outro Carga horária semanal? (*outro_carga_horaria_semanal*)
+-   Unidade de lotação: (*unidade_lotacao*)
+-   Possui Cargo de Direção (CD) ou Função Gratificada (FG)? ([*cd_ou_fg*]{.underline})
+-   Campus: (*campus*)
+-   Ano de ingresso como servidor na Universidade: (*ano_ingresso*)
+-   Ingressou por intermédio do sistema de cotas para PCD? (*ingresso_cotas_pcd*)
+-   Você se sente satisfeito/realizado/reconhecido/útil no seu local de trabalho? (*sentimento_local_trabalho*)
+-   Tipo de deficiência que possui: (*deficiencia*)
+-   Outro Tipo de deficiência? (*deficiencia_outro*)
+-   Possui o diagnóstico desde: (*periodo_diagnostico*)
+-   Causa: (*causa_deficiencia*)
+-   Você utiliza alguma tecnologia assistiva/recurso? (*uso_tecnologia_assistiva_recurso*)
+-   Qual(is) tecnologia assistiva/recurso?? (*qual_tecnologia*)
+-   Se utiliza alguma tecnologia assistiva/recurso, essa é disponibilizada pela UFSM? (*tecnologia_disponibilizada_ufsm*)
+-   Se não, como você consegue obter (através de recursos próprios, doações, etc)? (*como_consegue_obter_tecnologia*)
+-   Você necessita de algum acompanhamento ou apoio de outra pessoa para realizar as atividades cotidianas no ambiente de trabalho? (necessita_acompanhamento/*apoio_atividades_cotidianas_notrabalho*)
+-   Se necessita, em quais atividades? (*se_sim_quais_atividades*?)
+-   Esse acompanhamento/apoio é disponibilizado pela UFSM? (acompanhamento/*apoio_disponibilizado_ufsm*)
+-   Se não, como você consegue obter? (*se_nao_como_consegue_obter*)
+-   De um modo geral, como você considera o nível de acessibilidade arquitetônica da UFSM (Exemplos: rampas, elevadores e banheiros adaptados, calçadas com piso tátil, vagas reservadas em estacionamentos, etc)? (*como_considera_acessibilidade_arquitetonica_ufsm*)
+-   De um modo geral, como você considera o nível de acessibilidade atitudinal da UFSM (incentivo a percepções sem preconceitos, discriminações e estigmas)? (*como_considera_acessibilidade_atitudinal_ufsm*)
+-   De um modo geral, como você considera o nível de acessibilidade instrumental/digital da UFSM (Ex: software de leitor de tela no computador, sites e aplicativos institucionais acessíveis e ferramentas que eliminem barreiras digitais e de instrumentos de trabalho)? (*como_considera_acessibilidade_instrumental_digital_ufsm*)
+-   De um modo geral, como você considera o nível de acessibilidade comunicacional da UFSM (oferecimento de recursos e atividades que promovam a independência no acesso a qualquer conteúdo. Isso inclui legendas, áudios, descrições, Libras, braile, etc)? (*como_considera_acessibilidade_comunicacional_ufsm*)
+-   Você conhece a legislação brasileira sobre acessibilidade? (*conhece_legislacao_br_sobre_acessibilidade*)
+-   Qual seu objetivo quando fez o concurso para a UFSM (mais de uma opção pode ser marcada)? (*objetivo_quando_fez_concurso_ufsm*)
+-   Qual(is) outros objetivos? (*outro_objetivo_quando_fez_concurso_ufsm*)
+-   Você sentiu dificuldade de adaptação durante o ingresso nas atividades laborais na UFSM? (*dificuldade_adaptacao_durante_ingresso_atividades_laborais_ufsm*)
+-   Se sim, poderia relatar? Como foi resolvido? (*dificuldade_adaptacao_se_sim_como_foi_resolvido*)
+-   Você enfrentou algum problema de relacionamento interpessoal com chefias e/ou colegas? (*enfrentou_problema_relacionamento_chefia_eou_colegas*)
+-   Se sim, poderia relatar? Como foi resolvido? (*problema_relacionamento_se_sim_como_foi_resolvido*)
+-   Você já foi parte reclamante, na UFSM, em algum Processo administrativo disciplinar (PAD), Sindicância e/ou reclamatória trabalhista? (*ja_foi_parte_reclamante_processo_administrativo_disciplinar_sindicancia_eou_reclamatoria_trabalhista_naufsm*)
+-   Você considera que a UFSM dispõe de recursos humanos e materiais suficientes para atender necessidades que possam eventualmente surgir relacionadas a acessibilidade? (*considera_ufsm_dispoe_recursos_humanos_materiais_suficientes_atender_necessidades_que_eventualmente_surjam_em_relacao_acessibilidade*)
+-   Se não, poderia relatar o que considera insuficiente? (*se_nao_relate_oq_considera_insuficiente*)
+-   Você participa de alguma associação, sindicato, ou outros grupos de luta por defesa de direitos trabalhistas? (*voce_participa_associacao/sindicato/outros_grupos_luta_direitos_trabalhistas*)
+-   Se sim, qual? (*se_sim_qual_associacao/sindicato*)
+-   Se participa, você sente que as pautas das PCD são consideradas nas ações dessa associação/sindicato/grupo? (*se_participa_sente_pautas_pcd_consideradas_em_acoes_da_associacao*/*sindicato*)
+-   Espaço para outros comentários e informações que você queira nos passar sobre inclusão e acessibilidade na UFSM: (*espaco_comentarios*)
 
 ```{r, include=FALSE}
 # Tratamento carga horaria semanal
@@ -268,13 +217,15 @@ Nesta seção iremos desenvolver as seguintes análises:
 
 -   Idade X conhecimento da legislação
 
--   Objetivo de fazer o concurso X grau de satisfação.
+-   Satisfação geral X tempo de serviço
 
--   Satisfação X tempo de serviço
+-   Satisfação geral X escolaridade
 
--   Satisfação X escolaridade
+-   Satisfação geral X cargo
 
--   Satisfação X setores
+-   Objetivo de fazer o concurso X grau de satisfação (em todas as questões de acessibilidade)
+
+-   Objetivo de fazer o concurso X satisfação geral
 
 ### Gênero x Grau de satisfação para questões de acessibilidade
 
@@ -310,7 +261,7 @@ grafico <- ggplot(base1, aes(x = factor(como_considera_acessibilidade_arquiteton
   theme_minimal() +
   theme(plot.title = element_text(size = titulo_size, hjust = 0.5))
 
-grafico2 <- ggplot(base_feminino, aes(x = factor(como_considera_acessibilidade_comunicacional_ufsm, levels = ordem))) +
+grafico2 <- ggplot(base_feminino, aes(x = factor(como_considera_acessibilidade_arquitetonica_ufsm, levels = ordem))) +
   geom_bar(fill = "#445a14") +
   geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
   labs(x = NULL, y = NULL) +
@@ -320,7 +271,7 @@ grafico2 <- ggplot(base_feminino, aes(x = factor(como_considera_acessibilidade_c
         axis.text.y = element_blank(),
         plot.title = element_text(hjust = 0.5, size = titulo_size))
 
-grafico3 <- ggplot(base_masculino,  aes(x = factor(como_considera_acessibilidade_comunicacional_ufsm, levels = ordem))) +
+grafico3 <- ggplot(base_masculino,  aes(x = factor(como_considera_acessibilidade_arquitetonica_ufsm, levels = ordem))) +
   geom_bar(fill = "#A9B388", position = "dodge") +
   geom_text(aes(label = ..count..), stat = "count", position = position_dodge(width = 0.9), vjust = -0.5, size = texto_size) +
   labs(x = NULL, y = NULL) +
@@ -502,7 +453,7 @@ Agora, montamos uma tabela cruzada juntando as acessibilidades em apenas uma col
 No caso da Qui-Quadrado, estatística de teste seria o grau de concordância da nossa amostra, com a hipótese de que as variáveis são independentes; ou não possuem associação.
 E o p-valor é a probabilidade de que a associação entre as variáveis da amostra é ao acaso, usando 0,05 como valor crítico.
 A estatística de teste é o valor 11,535 e seu p-valor é 0,02116.
-Usando o nível de significância de 5%, e 4 graus de liberdade, a estatística de teste entra num valor crítico, porém o p-valor abaixo dos 0,05.
+Usando o nível de significância de 5%, e 4 graus de liberdade, a estatística de teste entra num valor crítico, e com o p-valor abaixo dos 0,05.
 Podemos então considerar que o gênero afeta na opinião sobre acessibilidade.
 
 ```{r include=FALSE}
@@ -644,7 +595,7 @@ satis
 ### Idade X Grau de satisfação para questões de acessibilidade
 
 Temos servidores de 33 a 69 anos na nossa base.
-Para fazer uma análise desta variável iremos separar as pessoas em intervalos de idade através do método dos quantis, que divide os dados em intervalos de tamanho aproximadamente igual, garantindo uma distribuição uniforme.
+Para fazer uma análise desta variável iremos separar as pessoas em faixa etárias e através do método dos quantis, que divide os dados em intervalos de tamanho aproximadamente igual, garantindo uma distribuição uniforme.
 Desta forma, temos quatro intervalos de dados: [33,40] com 17 pessoas, (40,46] com 19 pessoas, (46,53] com 13 pessoas e (53,69] com 15 pessoas.
 
 ```{r, echo=FALSE,warning=FALSE,warning=FALSE}
@@ -657,7 +608,7 @@ base1$intervalo_idade <- intervalos
 #gerando tabela
 df <- data.frame(a = unlist(c(base1$como_considera_acessibilidade_arquitetonica_ufsm,base1$como_considera_acessibilidade_atitudinal_ufsm,base1$como_considera_acessibilidade_instrumental_digital_ufsm,base1$como_considera_acessibilidade_comunicacional_ufsm)),b=unlist(c(base1$intervalo_idade,base1$intervalo_idade,base1$intervalo_idade,base1$intervalo_idade)))
 df = apply_labels(df, a =  "Respostas",
-                     b = "Intervalo de idade")
+                     b = "Faixa etária")
 satis<-crosstable(df, b, by = a, total="both")%>%
   as_flextable(by_header="Acessibilidade Geral")
 
@@ -739,28 +690,19 @@ grid.arrange(grafico1, grafico2, ncol = 2)
 
 ```
 
-Atribuímos nota às respostas às questões de acessibilidade, sendo Péssimo = 1, Ruim = 2, Regular = 3, Bom = 4 e Ótimo = 5.
-Na tabela abaixo temos a média desta pontuação e podemos ver um pouco mais claramente o que esta nos gráficos acima.
+
 Para a tabela cruzada, podemos ver que há algumas diferenças nas proporções, então a categoria "Ótimo" é maior proporcionalmente entre os servidores de 53 a 69 anos.
-O teste Qui-Quadrado dá um p-valor de 0.3434, isso nos diz que não há associação significativa entre a idade e a satisfação sobre acessibilidade.
+O teste Qui-Quadrado dá um p-valor de 0,3434, isso nos diz que não há associação significativa entre a idade e a satisfação sobre acessibilidade.
 
 ```{r, echo=FALSE,warning=FALSE}
 #gerando tabela
 df5 <- data.frame(a = unlist(c(base1$como_considera_acessibilidade_arquitetonica_ufsm,base1$como_considera_acessibilidade_atitudinal_ufsm,base1$como_considera_acessibilidade_instrumental_digital_ufsm,base1$como_considera_acessibilidade_comunicacional_ufsm)),b=unlist(c(base1$intervalo_idade,base1$intervalo_idade,base1$intervalo_idade,base1$intervalo_idade)))
 df5 = apply_labels(df5, a =  "Respostas",
-                     b = "Intervalo de idade")
+                     b = "Faixa etária")
 satis5<-crosstable(df5, b, by = a, total="both")%>%
   as_flextable(by_header="Acessibilidade Geral")
 
-means <- base1 %>% 
-  group_by(intervalo_idade) %>% 
-  summarize(arquitetonica_media = mean(arquitetonica_num, na.rm = TRUE),
-            atitudinal_media = mean(atitudinal_num, na.rm = TRUE),
-            comunicacional_media = mean(comunicacional_num, na.rm = TRUE),
-            instrumental_digital_media = mean(instrumental_digital_num, na.rm = TRUE)) %>% rename("Faixa etária" = intervalo_idade, "Média Arquitetônica" = arquitetonica_media, "Média Atitudinal" = atitudinal_media, "Média Comunicacional" = comunicacional_media,"Média Instrumental/Digital" = instrumental_digital_media)
-knitr::kable(means, caption = "Média das notas para as questões de acessibilidade por intervalo de idade do servidor")
 satis5
-
 ```
 
 ```{r include=FALSE}
@@ -853,7 +795,7 @@ Incluímos na tabela abaixo a quantidade/percentual agrupado das demais deficiê
 Os servidores com deficiência visual marcaram a maioria das questões com Regular (46,74%) e em segundo lugar Bom (31,52%).
 Os servidores portadores da segunda deficiência mais comum, a Física ou Motora, marcaram mais a opção Bom (50%) e em segundo Regular (39,06%).
 
-Sobre a associação entre variáveis, o teste de Qui-Quadrado acusa que a deficiência do servidor afeta em sua opinião sobre a acessibilidade, dado que o p-valor é abaixo do nível de significância(0,05).
+Sobre a associação entre variáveis, o teste de Qui-Quadrado acusa que a deficiência do servidor afeta em sua opinião sobre a acessibilidade, dado que o p-valor é equivalente a  2,2(e^-16), estando abaixo do nível de significância de 0,05.
 
 ```{r, echo=FALSE, warning=FALSE}
 
@@ -972,12 +914,6 @@ Portanto, aparentemente, a maioria deles está familiarizada com a legislação.
 ordem3 <- c("conheço totalmente", "conheço", "não conheço nem desconheço", "desconheço", "desconheço totalmente")
 base1$conhece_legislacao_br_sobre_acessibilidade <- factor(base1$conhece_legislacao_br_sobre_acessibilidade, levels = ordem3)
 
-
-
-
-
-
-
 #gerando tabela
 df6 <- data.frame(a = unlist(c(base1$intervalo_idade)), b =  unlist(c(base1$conhece_legislacao_br_sobre_acessibilidade)))
 df6 = apply_labels(df6, a =  "Faixa etária",
@@ -994,7 +930,7 @@ msatis6
 chisq.test(msatis6)
 ```
 
-Após a realização do teste, verificamos que o p-valor excede o nível de significância, então podemos dizer que a faixa etária não afeta no conhecimento sobre a legislação sobre acessibilidade.
+Após a realização do teste, verificamos que o p-valor equivale a 0,09582, assim excedendo o nível de significância de 0,05; então podemos dizer que a faixa etária não afeta no conhecimento sobre a legislação sobre acessibilidade.
 
 ```{r, echo=FALSE,warning=FALSE,warning=FALSE,fig.height=5, fig.width=10, fig.align='center'}
 texto_size <- 2.5 #  tamanho do texto para as frequências
@@ -1014,7 +950,7 @@ grafico1 <- ggplot(base1, aes(x = factor(intervalo_idade), fill = conhece_legisl
 grafico1
 ```
 
-### Satisfação x Tempo de serviço
+### Satisfação geral x Tempo de serviço
 
 Assim como ocorre com a amostra de ano de ingresso, enfrentamos uma limitação semelhante em relação ao tempo de serviço dos servidores (uma variável derivada do ano de ingresso).
 Por essa razão, optaremos por agrupar os indivíduos em intervalos de tempo de serviço.
@@ -1052,7 +988,7 @@ chisq.test(msatis7)
 
 ```
 
-O teste feito usando a tabela cruzada nos dá um p-valor menor que o nível de significância, então consideramos que o tempo de serviço afeta no sentimento sobre o local de trabalho significamente.Porém, olhando o gráfico, podemos ver que as pessoas que estão na Universidade entre 8 e 13 anos possuem a menor proporção de totalmente e muito satisfeito; e possui a maior quantidade de insatisfeitos.
+O teste feito usando a tabela cruzada nos dá um p-valor equivalente a 0,01899, sendo menor que o nível de significância, então consideramos que o tempo de serviço afeta no sentimento sobre o local de trabalho significamente.Porém, olhando o gráfico, podemos ver que as pessoas que estão na Universidade entre 8 e 13 anos possuem a menor proporção de totalmente e muito satisfeito; e possui a maior quantidade de insatisfeitos.
 
 ```{r, echo=FALSE,warning=FALSE,warning=FALSE,fig.height=5, fig.width=10, fig.align='center'}
 texto_size <- 2.5 #  tamanho do texto para as frequências
@@ -1072,7 +1008,7 @@ grafico1 <- ggplot(base1, aes(x = factor(intervalo_tempo_servico), fill = sentim
 grafico1
 ```
 
-### Satisfação X Escolaridade
+### Satisfação geral X Escolaridade
 
 Abaixo, encontram-se as informações sobre a escolaridade dos servidores e sua satisfação no local de trabalho.
 Observa-se que a maioria dos servidores possui doutorado (34,38%), seguido por pós-graduação lato sensu (31,25%).
@@ -1097,7 +1033,7 @@ msatis8
 chisq.test(msatis8)
 ```
 
-Realizando o Qui-Quadrado, obtivemos um p-valor acima de 0,05, assim não há associação significativa entre a satisfação no trabalho e a Escolaridade.
+Realizando o Qui-Quadrado, obtivemos um p-valor de 0,7353, assim não há associação significativa entre a satisfação no trabalho e a Escolaridade, pois está acima do nível de significância.
 E os gráficos mostram que a proporção está bem distribuída, mesmo considerando as colunas que possuem poucos servidores.
 
 ```{r, echo=FALSE,warning=FALSE,warning=FALSE,fig.height=5, fig.width=10, fig.align='center'}
@@ -1119,11 +1055,11 @@ grafico1 <- ggplot(base1, aes(x = factor(escolaridade), fill = sentimento_local_
 grafico1
 ```
 
-### Satisfação X Setores
+### Satisfação geral X Cargo
 
 Observamos que a maioria dos servidores é composta por técnicos administrativos em educação (79,69%), enquanto os docentes representam a minoria (20,31%).
 Na tabela abaixo, notamos que a maior parte dos servidores docentes declara-se satisfeita ou muito satisfeita (69,23%), o que também se aplica aos técnicos administrativos (64,71%).
-O teste usando a tabela cruzada, nos dá um p-valor acima do nível de significância, então podemos considerar que não há associação significativa entre a categoria do servidor e seu sentimento sobre o local de trabalho.
+O teste usando a tabela cruzada, nos dá um p-valor de 0,6277, sendo acima do nível de significância, então podemos considerar que não há associação significativa entre a categoria do servidor e seu sentimento sobre o local de trabalho.
 
 ```{r, echo=FALSE, warning=FALSE, flg.align='center'}
 #gerando tabela
@@ -1131,7 +1067,7 @@ df9 <- data.frame(a = unlist(c(base1$sentimento_local_trabalho)), b =  unlist(c(
 df9 = apply_labels(df9, a =  "Sentimento local trabalho",
                      b = "Categoria")
 satis9<-crosstable(df9, b, by = a, total="both")%>%
-  as_flextable(by_header="Sentimento sobre o local de trabalho")
+  as_flextable(by_header="Você se sente satisfeito/realizado/reconhecido/útil no local de trabalho?")
 
 satis9
 ```
@@ -1141,8 +1077,8 @@ msatis9<-matrix(c(3,7,4,10,5,23,1,7,0,4), ncol=5)
 msatis9
 chisq.test(msatis9)
 ```
-
-### Objetivo de fazer o concurso X grau de satisfação
+ 
+### Objetivo de fazer o concurso X Grau de satisfação para questões de acessibilidade
 
 A maioria dos servidores que participaram da pesquisa citaram que tinham como objetivo (ou um dos objetivos) a realização profissional quando fizeram o concurso da UFSM (68,75%).
 Em segundo lugar, citam independência financeira (67,19%), em terceiro realização pessoal (53,12%), em quarto contribuir socialmente (32,81%) e em último outros (9,38%).
@@ -1168,7 +1104,7 @@ A maioria dos servidores que citaram como objetivo contribuir socialmente e/ou i
 Já os servidores que citaram realização pessoal marcaram mais a opção Bom (44,12%).
 Enquanto os servidores que citaram como objetivo realização profissional marcaram na mesma proporção Bom e Regular (36,36%).
 
-Usando o Qui-Quadrado, obtivemos um p-valor acima de 0,05, assim podemos considerar que não há associação entre o objetivo e a opinião sobre a acessibilidade comunicacional.
+Usando o Qui-Quadrado, obtivemos um p-valor de 0,9564, sendo acima do nível de significância, podemos considerar que não há associação entre o objetivo e a opinião sobre a acessibilidade comunicacional.
 
 ```{r , echo=FALSE, warning=FALSE, flg.align='center'}
 df1 <- base1 %>% select (objetivo_quando_fez_concurso_ufsm,como_considera_acessibilidade_comunicacional_ufsm) %>%
@@ -1258,19 +1194,32 @@ msatis11
 chisq.test(msatis11)
 ```
 
-Abaixo temos uma tabela que atribui uma nota às respostas das questões de acessibilidade, como feito anteriormente, para resumir a informação e torná-la mais comparável.
-Em relação aos testes das últimas três tabelas, todos possuem um p-valor acima de 0,05, então podemos concluir que o objetivo não afeta na opinião dos quatro tipos de acessibilidades representadas no questionário.
+Em relação aos testes das últimas três tabelas, temos os seguintes p-valores: 0,6241 para Atitudinal, 0,9746 para Arquitetônica e 0,3928 para Instrumental/Digital. Sendo todos os p-valores acima do nível de significância, podemos concluir que o objetivo não afeta na opinião dos quatro tipos de acessibilidades representadas no questionário.
 
+
+### Objetivo de fazer o concurso X Satisfação geral
+
+Abaixo vemos a informação de sentimento de satisfação no local do trabalho e objetivos de quando realizou o concurso da UFSM. Todos os 5 grupos de objetivos tiveram o maior percentual de resposta à questão de satisfação "satisfeito". 
+Utilizando o teste do Qui-Quadrado, obtemos um p-valor de 0,6712, então podemos dizer que não há associação significativa entre o objetivo de fazer o concurso e a satisfação com o trabalho.
 ```{r , echo=FALSE, warning=FALSE, flg.align='center'}
-resumo <- base1 %>% select (objetivo_quando_fez_concurso_ufsm,instrumental_digital_num,comunicacional_num,arquitetonica_num,atitudinal_num) %>%
-  separate_rows(objetivo_quando_fez_concurso_ufsm, sep = "\\|") %>% 
-  group_by(objetivo_quando_fez_concurso_ufsm) %>% 
-  summarize("Média Instrumental/Digital" = mean(instrumental_digital_num),
-            "Média Arquitetonica" = mean(arquitetonica_num),
-            "Média Atitudinal" = mean(atitudinal_num),
-            "Média Comunicacional" = mean(comunicacional_num)) %>% 
-  rename('Objetivo de quando fez o concurso da UFSM' = objetivo_quando_fez_concurso_ufsm)
-knitr::kable(resumo, caption = "Média das notas para as questões de acessibilidade por objetivo de quando fez o concurso da UFSM")
+
+df1 <- base1 %>% select (objetivo_quando_fez_concurso_ufsm,sentimento_local_trabalho) %>%
+  separate_rows(objetivo_quando_fez_concurso_ufsm, sep = "\\|")
+
+df2 <- data.frame(a = unlist(c(df1$sentimento_local_trabalho)), b =  unlist(c(df1$objetivo_quando_fez_concurso_ufsm)))
+
+df3 = apply_labels(df2, a =  "Sentimento no local de trabalho",
+                     b = "Objetivos de quando realizaram o concurso da UFSM")
+
+satis11 <-crosstable(df3, b, by = a, total="both") %>%  as_flextable(by_header="Você se sente satisfeito/realizado/reconhecido/útil no local de trabalho?")
+
+satis11
+```
+```{r include=FALSE}
+msatis13<-matrix(c(2,7,1,5,9,6,8,0,10,9,9,20,4,15,21,4,6,0,4,4,0,2,1,0,1), ncol=5)
+msatis13
+chisq.test(msatis13)
+
 ```
 
 ## Referências
@@ -1284,3 +1233,7 @@ knitr::kable(resumo, caption = "Média das notas para as questões de acessibili
 <http://www.leg.ufpr.br/lib/exe/fetch.php/disciplinas:ce001:teste_do_qui-quadrado.pdf>
 
 <https://est.ufba.br/sites/est.ufba.br/files/kim/matd49-aula02-qui_quadrado-v2.pdf>
+
+<https://cesad.ufs.br/ORBI/public/uploadCatalago/14583016022012Estatistica_Aplicada_a_Administracao_Aula_10.pdf>
+
+<https://midia.atp.usp.br/plc/plc0503/impressos/plc0503_03.pdf>
